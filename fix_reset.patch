@@ -1,0 +1,50 @@
+--- src/App.tsx
++++ src/App.tsx
+@@ -72,9 +72,36 @@
+ 
+   const handleResetSample = () => {
+     const confirmMsg = isRTL
+-      ? 'هل تريد إعادة تعيين السيرة الذاتية إلى النموذج الافتراضي باللغة الحالية؟'
+-      : lang === 'fr'
+-      ? 'Voulez-vous réinitialiser le CV avec l\'exemple par défaut en français ?'
+-      : 'Reset CV to default sample profile in current language?';
+-    if (window.confirm(confirmMsg)) {
+-      setCvData(getSampleCVForLanguage(lang));
++      ? 'هل أنت متأكد من مسح جميع البيانات في هذا القسم الحالي فقط؟'
++      : lang === 'fr'
++      ? 'Voulez-vous vraiment effacer toutes les données de cette section uniquement ?'
++      : 'Are you sure you want to clear all data in this current section only?';
++
++    if (window.confirm(confirmMsg)) {
++      setCvData((prev) => {
++        const newData = { ...prev };
++        switch (activeTab) {
++          case 'personal':
++            newData.personal = { fullName: '', jobTitle: '', email: '', phone: '', location: '', website: '', linkedin: '', github: '', avatarUrl: '' };
++            break;
++          case 'summary':
++            newData.summary = '';
++            break;
++          case 'experience':
++            newData.experiences = [];
++            break;
++          case 'education':
++            newData.education = [];
++            break;
++          case 'skills':
++            newData.skills = [];
++            break;
++          case 'languages':
++            newData.languages = [];
++            break;
++          case 'hobbies':
++            newData.hobbies = [];
++            break;
++          case 'theme':
++            newData.theme = { primaryColor: '#4f46e5', fontFamily: 'sans', template: 'modern' };
++            break;
++        }
++        return newData;
++      });
+     }
+   };

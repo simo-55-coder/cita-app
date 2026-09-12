@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Base mobile optimizations */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[dir="rtl"], [dir="rtl"] body {
+  font-family: 'Cairo', 'Tajawal', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.font-arabic {
+  font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html, body {
+    width: 100vw !important;
+    min-height: 100vh !important;
+    background: #ffffff !important;
+    color: #1e293b !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: visible !important;
+  }
+
+  /* Completely hide interactive UI elements */
+  .no-print,
+  #root > .no-print,
+  header,
+  nav,
+  aside,
+  button,
+  #language-switcher,
+  [role="dialog"] {
+    display: none !important;
+  }
+
+  /* Show only the dedicated print container */
+  .print-only,
+  #print-cv-root {
+    display: block !important;
+    visibility: visible !important;
+    width: 100vw !important;
+    min-height: 100vh !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  #print-cv-root * {
+    visibility: visible !important;
+  }
+
+  #print-cv-root > div {
+    width: 100vw !important;
+    min-height: 100vh !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  #print-cv-document {
+    width: 100vw !important;
+    min-height: 100vh !important;
+    max-width: none !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-sizing: border-box !important;
+    page-break-after: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+}

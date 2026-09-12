@@ -1,0 +1,6 @@
+{
+  "name": "CVita",
+  "description": "Mobile-first CV builder optimized for Android smartphones with smooth wizard navigation, real-time scaled A4 preview, and Google Drive backup.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
