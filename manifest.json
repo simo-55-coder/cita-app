@@ -1,0 +1,25 @@
+{
+  "name": "CVita",
+  "short_name": "CVita",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait",
+  "description": "Mobile-first CV builder optimized for Android smartphones with smooth wizard navigation",
+  "icons": [
+    {
+      "src": "pwa-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "pwa-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
+
