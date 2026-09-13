@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CVData, WizardTabKey } from './types';
-import { getSampleCVForLanguage } from './data/defaultCV';
+import { getEmptyCV } from './data/defaultCV';
 import { Header } from './components/Header';
 import { Wizard } from './components/Wizard';
 import { PreviewPanel } from './components/PreviewPanel';
@@ -27,12 +27,14 @@ function CVBuilderApp() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
+        // Hydrate state from localStorage for offline persistence
         return JSON.parse(saved);
       }
     } catch (e) {
       console.warn('Failed to read from localStorage', e);
     }
-    return getSampleCVForLanguage('ar');
+    // Fallback to empty data corresponding to the user's current locale
+    return getEmptyCV(lang);
   });
 
   const [activeTab, setActiveTab] = useState<WizardTabKey>('personal');
