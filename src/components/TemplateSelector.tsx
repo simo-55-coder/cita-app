@@ -284,7 +284,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('unlocked_premium_templates');
+      const stored = sessionStorage.getItem('unlocked_premium_templates');
       if (stored) {
         setUnlockedTemplates(JSON.parse(stored));
       }
@@ -310,7 +310,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         const newUnlocked = [...unlockedTemplates, adModalTemplate];
         setUnlockedTemplates(newUnlocked);
         try {
-          localStorage.setItem('unlocked_premium_templates', JSON.stringify(newUnlocked));
+          sessionStorage.setItem('unlocked_premium_templates', JSON.stringify(newUnlocked));
         } catch(e) {}
         onSelectTemplate(adModalTemplate);
         setAdModalTemplate(null);
