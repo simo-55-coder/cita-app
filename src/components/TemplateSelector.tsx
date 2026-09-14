@@ -284,6 +284,9 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
   useEffect(() => {
     try {
+      // Clear old localStorage just in case it conflicts
+      localStorage.removeItem('unlocked_premium_templates');
+      
       const stored = sessionStorage.getItem('unlocked_premium_templates');
       if (stored) {
         setUnlockedTemplates(JSON.parse(stored));
