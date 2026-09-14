@@ -1,6 +1,6 @@
 import React from 'react';
 import { PersonalInfo } from '../../types';
-import { User, Mail, Phone, MapPin, Globe, Linkedin, Github, Image as ImageIcon } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Globe, Linkedin, Github, Image as ImageIcon, Upload } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 interface PersonalSectionProps {
@@ -170,20 +170,47 @@ export const PersonalSection: React.FC<PersonalSectionProps> = ({ data, onChange
           </div>
         </div>
 
-        {/* Avatar Image URL */}
+        {/* Avatar Image URL & Upload */}
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
             <ImageIcon className="w-3 h-3 text-slate-400" />
             <span>{t.personal.avatarUrl}</span>
           </label>
-          <input
-            id="input-personal-avatar"
-            type="url"
-            value={data.avatarUrl || ''}
-            onChange={(e) => handleChange('avatarUrl', e.target.value)}
-            placeholder={t.personal.avatarPlaceholder}
-            className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-violet-500/30 focus:border-violet-600 outline-none transition-all shadow-xs"
-          />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <input
+              id="input-personal-avatar"
+              type="url"
+              value={data.avatarUrl || ''}
+              onChange={(e) => handleChange('avatarUrl', e.target.value)}
+              placeholder={t.personal.avatarPlaceholder}
+              className="flex-1 w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-violet-500/30 focus:border-violet-600 outline-none transition-all shadow-xs"
+            />
+            <div className="relative shrink-0">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      handleChange('avatarUrl', reader.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                title="Upload Image"
+              />
+              <button
+                type="button"
+                className="w-full sm:w-auto bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Upload</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

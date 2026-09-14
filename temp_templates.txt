@@ -1,0 +1,201 @@
+1069:const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
+1070-  const { t, isRTL } = useLanguage();
+1071-  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+1072-  const primary = theme?.primaryColor || '#1e293b';
+1073-  const scaleClass = isPrint ? 'scale-[0.98] transform-origin-top' : '';
+1074-
+1075-  return (
+1076-    <div id={id} dir={isRTL ? 'rtl' : 'ltr'} className={`bg-white text-slate-800 ${isRTL ? 'font-arabic' : 'font-sans'} overflow-hidden min-h-[1056px] w-full max-w-[816px] mx-auto shadow-sm ${scaleClass}`}>
+1077-      <div className="flex h-full min-h-[1056px]">
+1078-        {/* Left Column - Dark Accent */}
+1079-        <div className="w-[32%] text-white p-6 flex flex-col gap-6" style={{ backgroundColor: primary }}>
+1080-          {personal.avatarUrl ? (
+1081-            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white/20 shadow-lg">
+1082-              <img src={personal.avatarUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
+1083-            </div>
+1084-          ) : (
+1085-            <div className="w-32 h-32 mx-auto rounded-full bg-white/10 border-4 border-white/20 shadow-lg flex items-center justify-center">
+1086-              <span className="text-4xl text-white/50">{personal.fullName?.charAt(0) || ''}</span>
+1087-            </div>
+1088-          )}
+1089-
+1090-          <div>
+1091-            <h1 className="text-2xl font-bold leading-tight mb-1">{personal.fullName}</h1>
+1092-            <p className="text-sm text-white/80 font-medium">{personal.jobTitle}</p>
+1093-          </div>
+1094-
+1095-          <div className="space-y-3 text-sm text-white/90">
+1096-            {personal.email && <div className="flex items-center gap-2"><Mail className="w-4 h-4 opacity-70" /><span className="break-all">{personal.email}</span></div>}
+1097-            {personal.phone && <div className="flex items-center gap-2"><Phone className="w-4 h-4 opacity-70" /><span>{personal.phone}</span></div>}
+1098-            {personal.location && <div className="flex items-center gap-2"><MapPin className="w-4 h-4 opacity-70" /><span>{personal.location}</span></div>}
+1099-            {personal.linkedin && <div className="flex items-center gap-2"><Linkedin className="w-4 h-4 opacity-70" /><span className="break-all">{personal.linkedin.replace(/^https?:\/\//, '')}</span></div>}
+1100-            {personal.github && <div className="flex items-center gap-2"><Github className="w-4 h-4 opacity-70" /><span className="break-all">{personal.github.replace(/^https?:\/\//, '')}</span></div>}
+1101-            {personal.website && <div className="flex items-center gap-2"><Globe className="w-4 h-4 opacity-70" /><span className="break-all">{personal.website.replace(/^https?:\/\//, '')}</span></div>}
+1102-          </div>
+1103-
+1104-          {skills && skills.length > 0 && (
+1105-            <div className="mt-4">
+1106-              <h2 className="text-sm font-bold uppercase tracking-widest border-b border-white/20 pb-2 mb-3">{t.skills.sectionTitle}</h2>
+1107-              <div className="flex flex-wrap gap-1.5">
+1108-                {skills.map(s => (
+1109-                  <span key={s.id} className="bg-white/10 px-2 py-1 rounded text-xs">{s.name}</span>
+1110-                ))}
+1111-              </div>
+1112-            </div>
+1113-          )}
+1114-
+1115-          {languages && languages.length > 0 && (
+1116-            <div className="mt-4">
+1117-              <h2 className="text-sm font-bold uppercase tracking-widest border-b border-white/20 pb-2 mb-3">{t.languages.sectionTitle}</h2>
+1118-              <div className="space-y-2">
+1119-                {languages.map(l => (
+1120-                  <div key={l.id} className="flex justify-between text-xs">
+1121-                    <span>{l.name}</span>
+1122-                    <span className="opacity-70">{t.proficiencies[l.proficiency] || l.proficiency}</span>
+1123-                  </div>
+1124-                ))}
+1125-              </div>
+1126-            </div>
+1127-          )}
+1128-        </div>
+1129-
+1130-        {/* Right Column - Main Content */}
+1131-        <div className="w-[68%] p-8 bg-white flex flex-col gap-6">
+1132-          {summary && (
+1133-            <section>
+1134-              <h2 className="text-lg font-bold uppercase tracking-widest text-slate-800 mb-2 flex items-center gap-2" style={{ color: primary }}>
+1135-                <span className="w-6 h-0.5 bg-current inline-block"></span>
+1136-                {t.summary.sectionTitle}
+1137-              </h2>
+1138-              <p className="text-sm text-slate-600 leading-relaxed text-justify">{renderText(summary)}</p>
+1139-            </section>
+1140-          )}
+1141-
+1142-          {experiences && experiences.length > 0 && (
+1143-            <section>
+1144-              <h2 className="text-lg font-bold uppercase tracking-widest text-slate-800 mb-4 flex items-center gap-2" style={{ color: primary }}>
+1145-                <span className="w-6 h-0.5 bg-current inline-block"></span>
+1146-                {t.experience.sectionTitle}
+1147-              </h2>
+1148-              <div className="space-y-5 border-s-2 ms-2 ps-4" style={{ borderColor: `${primary}30` }}>
+1149-                {experiences.map(exp => (
+1150-                  <div key={exp.id} className="relative">
+1151-                    <div className="absolute -start-[23px] top-1.5 w-3 h-3 rounded-full bg-white border-2" style={{ borderColor: primary }}></div>
+1152-                    <div className="flex justify-between items-baseline mb-1">
+1153-                      <h3 className="text-[15px] font-bold text-slate-900">{exp.position}</h3>
+1154-                      <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{exp.startDate} – {exp.current ? t.present : exp.endDate}</span>
+1155-                    </div>
+1156-                    <h4 className="text-sm font-semibold mb-2" style={{ color: primary }}>{exp.company}{exp.location ? ` | ${exp.location}` : ''}</h4>
+1157-                    {exp.description && <p className="text-xs text-slate-600 mb-2 leading-relaxed">{renderText(exp.description)}</p>}
+1158-                    {exp.highlights && exp.highlights.length > 0 && (
+1159-                      <ul className="list-disc list-inside text-xs text-slate-600 space-y-1">
+1160-                        {exp.highlights.filter(Boolean).map((h, i) => <li key={i}>{h}</li>)}
+1161-                      </ul>
+1162-                    )}
+1163-                  </div>
+1164-                ))}
+1165-              </div>
+1166-            </section>
+1167-          )}
+1168-
+1169-          {education && education.length > 0 && (
+1170-            <section>
+1171-              <h2 className="text-lg font-bold uppercase tracking-widest text-slate-800 mb-4 flex items-center gap-2" style={{ color: primary }}>
+1172-                <span className="w-6 h-0.5 bg-current inline-block"></span>
+1173-                {t.education.sectionTitle}
+1174-              </h2>
+1175-              <div className="space-y-4 border-s-2 ms-2 ps-4" style={{ borderColor: `${primary}30` }}>
+1176-                {education.map(edu => (
+1177-                  <div key={edu.id} className="relative">
+1178-                    <div className="absolute -start-[23px] top-1.5 w-3 h-3 rounded-full bg-white border-2" style={{ borderColor: primary }}></div>
+1179-                    <div className="flex justify-between items-baseline mb-1">
+1180-                      <h3 className="text-sm font-bold text-slate-900">{edu.degree}</h3>
+1181-                      <span className="text-xs font-semibold text-slate-500">{edu.startDate} – {edu.endDate}</span>
+1182-                    </div>
+1183-                    <h4 className="text-sm font-semibold" style={{ color: primary }}>{edu.institution}</h4>
+1184-                    {(edu.fieldOfStudy || edu.gpa) && (
+1185-                      <p className="text-xs text-slate-600 mt-1">
+1186-                        {edu.fieldOfStudy} {edu.gpa && `• GPA: ${edu.gpa}`}
+1187-                      </p>
+1188-                    )}
+1189-                  </div>
+1190-                ))}
+1191-              </div>
+1192-            </section>
+1193-          )}
+1194-        </div>
+1195-      </div>
+1196-    </div>
+1197-  );
+1198-};
+1199-
+1200-const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
+1201-  const { t, isRTL } = useLanguage();
+1202-  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+1203-  const primary = theme?.primaryColor || '#ec4899';
+1204-  const scaleClass = isPrint ? 'scale-[0.98] transform-origin-top' : '';
+1205-
+1206-  return (
+1207-    <div id={id} dir={isRTL ? 'rtl' : 'ltr'} className={`bg-slate-50 text-slate-800 ${isRTL ? 'font-arabic' : 'font-sans'} overflow-hidden min-h-[1056px] w-full max-w-[816px] mx-auto p-8 shadow-sm ${scaleClass}`}>
+1208-      <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 min-h-full">
+1209-        {/* Header */}
+1210-        <header className="flex flex-col items-center text-center mb-8">
+1211-          {personal.avatarUrl && (
+1212-            <div className="w-28 h-28 rounded-full overflow-hidden mb-4 border-2 p-1" style={{ borderColor: primary }}>
+1213-              <div className="w-full h-full rounded-full overflow-hidden">
+1214-                <img src={personal.avatarUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
+1215-              </div>
+1216-            </div>
+1217-          )}
+1218-          <h1 className="text-4xl font-black tracking-tight text-slate-900 mb-2">{personal.fullName}</h1>
+1219-          <p className="text-lg font-medium tracking-wide uppercase" style={{ color: primary }}>{personal.jobTitle}</p>
+1220-          
+1221-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-4 text-xs font-semibold text-slate-500">
+1222-            {personal.email && <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5"/> {personal.email}</span>}
+1223-            {personal.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5"/> {personal.phone}</span>}
+1224-            {personal.location && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5"/> {personal.location}</span>}
+1225-            {personal.linkedin && <span className="flex items-center gap-1"><Linkedin className="w-3.5 h-3.5"/> {personal.linkedin.replace(/^https?:\/\//, '')}</span>}
+1226-          </div>
+1227-        </header>
+1228-
+1229-        {summary && (
+1230-          <section className="mb-8 text-center px-8">
+1231-            <p className="text-[15px] leading-relaxed text-slate-600 font-medium italic">"{renderText(summary)}"</p>
+1232-          </section>
+1233-        )}
+1234-
+1235-        <div className="grid grid-cols-3 gap-8">
+1236-          <div className="col-span-2 space-y-8">
+1237-            {experiences && experiences.length > 0 && (
+1238-              <section>
+1239-                <h2 className="text-xl font-black uppercase text-slate-900 mb-4 pb-2 border-b-2" style={{ borderColor: `${primary}30` }}>{t.experience.sectionTitle}</h2>
+1240-                <div className="space-y-6">
+1241-                  {experiences.map(exp => (
+1242-                    <div key={exp.id}>
+1243-                      <div className="flex justify-between items-baseline mb-1">
+1244-                        <h3 className="text-base font-bold text-slate-800">{exp.position}</h3>
+1245-                        <span className="text-xs font-bold px-2 py-1 rounded-md text-white" style={{ backgroundColor: primary }}>{exp.startDate} – {exp.current ? t.present : exp.endDate}</span>
+1246-                      </div>
+1247-                      <h4 className="text-sm font-bold text-slate-500 mb-2">{exp.company} {exp.location && `• ${exp.location}`}</h4>
+1248-                      {exp.description && <p className="text-sm text-slate-600 mb-2">{renderText(exp.description)}</p>}
+1249-                    </div>
+1250-                  ))}
+1251-                </div>
+1252-              </section>
+1253-            )}
+1254-
+1255-            {education && education.length > 0 && (
+1256-              <section>
+1257-                <h2 className="text-xl font-black uppercase text-slate-900 mb-4 pb-2 border-b-2" style={{ borderColor: `${primary}30` }}>{t.education.sectionTitle}</h2>
+1258-                <div className="space-y-4">
+1259-                  {education.map(edu => (
+1260-                    <div key={edu.id}>
+1261-                      <div className="flex justify-between items-baseline mb-1">
+1262-                        <h3 className="text-base font-bold text-slate-800">{edu.degree}</h3>
+1263-                        <span className="text-xs font-bold text-slate-500">{edu.startDate} – {edu.endDate}</span>
+1264-                      </div>
+1265-                      <h4 className="text-sm font-bold" style={{ color: primary }}>{edu.institution}</h4>
+1266-                    </div>
+1267-                  ))}
+1268-                </div>
+1269-              </section>

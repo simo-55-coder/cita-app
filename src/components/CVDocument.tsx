@@ -15,6 +15,14 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
+const getDynamicTextSize = (text?: string, baseSize: string = 'text-[12px]') => {
+  if (!text) return baseSize;
+  const len = text.length;
+  if (len > 35) return 'text-[9.5px] leading-tight';
+  if (len > 25) return 'text-[10.5px] leading-tight';
+  return baseSize;
+};
+
 const renderText = (text?: string) => {
   if (!text) return null;
   return text.split(/\\n|\n/).map((line, idx, arr) => (
@@ -103,7 +111,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   {personal.email && (
                     <div className="flex items-center gap-1 min-w-0">
                       <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" />
-                      <span dir="ltr" className="break-all">{personal.email}</span>
+                      <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.email)}`}>{personal.email}</span>
                     </div>
                   )}
                   {personal.phone && (
@@ -115,25 +123,25 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   {personal.location && (
                     <div className="flex items-center gap-1 min-w-0">
                       <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" />
-                      <span className="break-words whitespace-normal">{personal.location}</span>
+                      <span className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.location)}`}>{personal.location}</span>
                     </div>
                   )}
                   {personal.website && (
                     <div className="flex items-center gap-1 min-w-0">
                       <Globe className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" />
-                      <span dir="ltr" className="break-all">{personal.website.replace(/^https?:\/\//, '')}</span>
+                      <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ''))}`}>{personal.website.replace(/^https?:\/\//, '')}</span>
                     </div>
                   )}
                   {personal.linkedin && (
                     <div className="flex items-center gap-1 min-w-0">
                       <Linkedin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" />
-                      <span dir="ltr" className="break-all">{personal.linkedin.replace(/^https?:\/\//, '')}</span>
+                      <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ''))}`}>{personal.linkedin.replace(/^https?:\/\//, '')}</span>
                     </div>
                   )}
                   {personal.github && (
                     <div className="flex items-center gap-1 min-w-0">
                       <Github className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" />
-                      <span dir="ltr" className="break-all">{personal.github.replace(/^https?:\/\//, '')}</span>
+                      <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.github.replace(/^https?:\/\//, ''))}`}>{personal.github.replace(/^https?:\/\//, '')}</span>
                     </div>
                   )}
                 </div>
@@ -158,7 +166,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           {summary && (
             <section className="mb-4 sm:mb-6 p-2 sm:p-2.5 rounded-xl bg-slate-50/80 border" style={{ borderColor: `${primary}20` }}>
               <h2
-                className="text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5"
+                className="text-[12px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5"
                 style={{ color: primary }}
               >
                 <span>{t.summary.sectionTitle}</span>
@@ -189,27 +197,27 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                       <div
                         key={exp.id}
                         className={`relative ${
-                          isRTL ? 'pr-2.5 sm:pr-3 border-r-2' : 'pl-2.5 sm:pl-3 border-l-2'
+                          isRTL ? 'pr-2.5 sm:pr-3 border-e-2' : 'pl-2.5 sm:pl-3 border-s-2'
                         }`}
                         style={{ borderColor: `${primary}40` }}
                       >
                         <div className="flex flex-nowrap justify-between items-baseline gap-1 mb-0.5">
                           <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{exp.position}</h3>
-                          <span className="text-[11px] sm:text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+                          <span className="text-[12px] font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
                             {exp.startDate} – {exp.current ? t.present : exp.endDate}
                           </span>
                         </div>
-                        <div className="text-[11px] sm:text-xs font-medium text-slate-700 mb-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <div className="text-[12px] font-medium text-slate-700 mb-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                           <span className="font-semibold break-words" style={{ color: primary }}>{exp.company}</span>
                           {exp.location && <span className="text-slate-400 break-words">• {exp.location}</span>}
                         </div>
                         {exp.description && (
-                          <p className="text-[11px] sm:text-xs text-slate-600 mb-1 leading-[1.7] break-words">
+                          <p className="text-[12px] text-slate-600 mb-1 leading-[1.7] break-words">
                             {renderText(exp.description)}
                           </p>
                         )}
                         {exp.highlights && exp.highlights.length > 0 && (
-                          <ul className={`list-disc list-outside ${isRTL ? 'mr-3.5' : 'ml-3.5'} space-y-0.5 text-[11px] sm:text-xs text-slate-600 leading-snug break-words`}>
+                          <ul className={`list-disc list-outside ${isRTL ? 'mr-3.5' : 'ml-3.5'} space-y-0.5 text-[12px] text-slate-600 leading-snug break-words`}>
                             {exp.highlights.filter(Boolean).map((h, i) => (
                               <li key={i}>{h}</li>
                             ))}
@@ -237,25 +245,25 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                       <div
                         key={edu.id}
                         className={`relative ${
-                          isRTL ? 'pr-2.5 sm:pr-3 border-r-2' : 'pl-2.5 sm:pl-3 border-l-2'
+                          isRTL ? 'pr-2.5 sm:pr-3 border-e-2' : 'pl-2.5 sm:pl-3 border-s-2'
                         }`}
                         style={{ borderColor: `${primary}40` }}
                       >
                         <div className="flex flex-nowrap justify-between items-baseline gap-1 mb-0.5">
                           <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{edu.degree}</h3>
-                          <span className="text-[11px] sm:text-xs font-medium text-slate-500 shrink-0">
+                          <span className="text-[12px] font-medium text-slate-500 shrink-0">
                             {edu.startDate} – {edu.endDate}
                           </span>
                         </div>
-                        <div className="text-[11px] sm:text-xs font-medium text-slate-700 flex flex-wrap items-center gap-x-1.5">
+                        <div className="text-[12px] font-medium text-slate-700 flex flex-wrap items-center gap-x-1.5">
                           <span style={{ color: primary }} className="break-words">{edu.institution}</span>
                           {edu.location && <span className="text-slate-400 break-words">, {edu.location}</span>}
                         </div>
                         {edu.fieldOfStudy && (
-                          <p className="text-[11px] sm:text-xs text-slate-500 italic mt-0.5 break-words">{edu.fieldOfStudy}</p>
+                          <p className="text-[12px] text-slate-500 italic mt-0.5 break-words">{edu.fieldOfStudy}</p>
                         )}
                         {edu.gpa && (
-                          <p className="text-[11px] sm:text-xs font-medium text-slate-600 mt-0.5">
+                          <p className="text-[12px] font-medium text-slate-600 mt-0.5">
                             {t.education.gpa}: {edu.gpa}
                           </p>
                         )}
@@ -283,14 +291,14 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                     {skills.map((skill) => (
                       <div
                         key={skill.id}
-                        className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium border break-words max-w-full"
+                        className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[12px] font-medium border break-words max-w-full"
                         style={{
                           backgroundColor: `${primary}08`,
                           borderColor: `${primary}25`,
                           color: primary,
                         }}
                       >
-                        <span className="break-words whitespace-normal">{skill.name}</span>
+                        <span className="break-words">{skill.name}</span>
                         <span className="text-[8px] sm:text-[9px] text-slate-400 shrink-0">
                           ({t.levels[skill.level] || skill.level})
                         </span>
@@ -314,8 +322,8 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div className="space-y-1 sm:space-y-1.5">
                     {languages.map((item) => (
                       <div key={item.id} className="flex justify-between items-start text-[11px] gap-2 sm:text-xs gap-1">
-                        <span className="font-medium text-slate-800 break-words whitespace-normal">{item.name}</span>
-                        <span className="text-[11px] sm:text-xs text-slate-500 font-medium shrink-0">
+                        <span className="font-medium text-slate-800 break-words">{item.name}</span>
+                        <span className="text-[12px] text-slate-500 font-medium shrink-0">
                           {t.proficiencies[item.proficiency] || item.proficiency}
                         </span>
                       </div>
@@ -339,7 +347,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                     {hobbies.map((hobby, index) => (
                       <span
                         key={index}
-                        className="text-[11px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 break-words"
+                        className="text-[12px] px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 break-words"
                       >
                         {hobby}
                       </span>
@@ -379,8 +387,8 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
             </p>
 
             {/* Formal Horizontal Contact Bar with Bullet Separators */}
-            <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 mt-2 text-[11px] sm:text-xs text-slate-600">
-              {personal.email && <span dir="ltr" className="break-all">{personal.email}</span>}
+            <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 mt-2 text-[12px] text-slate-600">
+              {personal.email && <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.email)}`}>{personal.email}</span>}
               {personal.phone && (
                 <>
                   <span className="text-slate-300">•</span>
@@ -396,13 +404,13 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
               {personal.linkedin && (
                 <>
                   <span className="text-slate-300">•</span>
-                  <span dir="ltr" className="break-all">{personal.linkedin.replace(/^https?:\/\//, '')}</span>
+                  <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ''))}`}>{personal.linkedin.replace(/^https?:\/\//, '')}</span>
                 </>
               )}
               {personal.website && (
                 <>
                   <span className="text-slate-300">•</span>
-                  <span dir="ltr" className="break-all">{personal.website.replace(/^https?:\/\//, '')}</span>
+                  <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ''))}`}>{personal.website.replace(/^https?:\/\//, '')}</span>
                 </>
               )}
             </div>
@@ -436,24 +444,24 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div key={exp.id} className="space-y-0.5">
                     <div className="flex flex-nowrap justify-between items-baseline gap-1">
                       <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{exp.position}</h3>
-                      <span className="text-[11px] sm:text-xs font-semibold text-slate-600 shrink-0">
+                      <span className="text-[12px] font-semibold text-slate-600 shrink-0">
                         {exp.startDate} – {exp.current ? t.present : exp.endDate}
                       </span>
                     </div>
 
-                    <div className="text-[11px] sm:text-xs font-semibold text-slate-700 flex flex-wrap items-center justify-between gap-1">
+                    <div className="text-[12px] font-semibold text-slate-700 flex flex-wrap items-center justify-between gap-1">
                       <span style={{ color: primary }} className="break-words">{exp.company}</span>
-                      {exp.location && <span className="text-slate-500 font-normal text-[11px] sm:text-xs">{exp.location}</span>}
+                      {exp.location && <span className="text-slate-500 font-normal text-[12px]">{exp.location}</span>}
                     </div>
 
                     {exp.description && (
-                      <p className="text-[11px] sm:text-xs text-slate-600 leading-[1.7] text-justify break-words">
+                      <p className="text-[12px] text-slate-600 leading-[1.7] text-justify break-words">
                         {renderText(exp.description)}
                       </p>
                     )}
 
                     {exp.highlights && exp.highlights.length > 0 && (
-                      <ul className={`list-disc list-outside ${isRTL ? 'mr-4' : 'ml-4'} space-y-0.5 text-[11px] sm:text-xs text-slate-600 leading-snug pt-0.5 break-words`}>
+                      <ul className={`list-disc list-outside ${isRTL ? 'mr-4' : 'ml-4'} space-y-0.5 text-[12px] text-slate-600 leading-snug pt-0.5 break-words`}>
                         {exp.highlights.filter(Boolean).map((h, i) => (
                           <li key={i}>{h}</li>
                         ))}
@@ -479,14 +487,14 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div key={edu.id} className="flex flex-nowrap justify-between items-baseline gap-1">
                     <div className="min-w-0">
                       <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{edu.degree}</h3>
-                      <div className="text-[11px] sm:text-xs text-slate-700 flex flex-wrap items-center gap-1">
+                      <div className="text-[12px] text-slate-700 flex flex-wrap items-center gap-1">
                         <span className="font-semibold break-words" style={{ color: primary }}>{edu.institution}</span>
                         {edu.location && <span className="text-slate-500">, {edu.location}</span>}
                         {edu.fieldOfStudy && <span className="text-slate-500 italic"> — {edu.fieldOfStudy}</span>}
                       </div>
                     </div>
                     <div className="text-end shrink-0">
-                      <span className="text-[11px] sm:text-xs font-semibold text-slate-600">
+                      <span className="text-[12px] font-semibold text-slate-600">
                         {edu.startDate} – {edu.endDate}
                       </span>
                       {edu.gpa && (
@@ -509,11 +517,11 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                 <h2 className="text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900 mb-1.5 pb-0.5 border-b border-slate-200">
                   {t.skills.sectionTitle}
                 </h2>
-                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] sm:text-xs">
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[12px]">
                   {skills.map((skill) => (
                     <div key={skill.id} className="flex items-center gap-1.5 text-slate-700 min-w-0">
                       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: primary }} />
-                      <span className="break-words whitespace-normal">{skill.name}</span>
+                      <span className="break-words">{skill.name}</span>
                     </div>
                   ))}
                 </div>
@@ -527,11 +535,11 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <h2 className="text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900 mb-1 pb-0.5 border-b border-slate-200">
                     {t.languages.sectionTitle}
                   </h2>
-                  <div className="space-y-1 text-[11px] sm:text-xs">
+                  <div className="space-y-1 text-[12px]">
                     {languages.map((item) => (
                       <div key={item.id} className="flex justify-between items-start gap-2">
-                        <span className="font-medium text-slate-800 break-words whitespace-normal">{item.name}</span>
-                        <span className="text-[11px] sm:text-xs text-slate-500 shrink-0">
+                        <span className="font-medium text-slate-800 break-words">{item.name}</span>
+                        <span className="text-[12px] text-slate-500 shrink-0">
                           {t.proficiencies[item.proficiency] || item.proficiency}
                         </span>
                       </div>
@@ -545,7 +553,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <h2 className="text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900 mb-1 pb-0.5 border-b border-slate-200">
                     {t.hobbies.sectionTitle}
                   </h2>
-                  <p className="text-[11px] sm:text-xs text-slate-600 break-words">
+                  <p className="text-[12px] text-slate-600 break-words">
                     {hobbies.join(' • ')}
                   </p>
                 </div>
@@ -612,7 +620,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div className="p-0.5 sm:p-1 rounded-md text-white shrink-0" style={{ backgroundColor: primary }}>
                     <Mail className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="text-[10px] sm:text-[11px] break-all" dir="ltr">{personal.email}</span>
+                  <span className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.email)}`} dir="ltr">{personal.email}</span>
                 </div>
               )}
               {personal.phone && (
@@ -620,7 +628,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div className="p-0.5 sm:p-1 rounded-md text-white shrink-0" style={{ backgroundColor: primary }}>
                     <Phone className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="text-[10px] sm:text-[11px] break-all" dir="ltr">{personal.phone}</span>
+                  <span className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.phone)}`} dir="ltr">{personal.phone}</span>
                 </div>
               )}
               {personal.location && (
@@ -628,7 +636,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div className="p-0.5 sm:p-1 rounded-md text-white shrink-0" style={{ backgroundColor: primary }}>
                     <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="text-[10px] sm:text-[11px] break-all">{personal.location}</span>
+                  <span className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.location)}`}>{personal.location}</span>
                 </div>
               )}
               {personal.website && (
@@ -636,7 +644,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div className="p-0.5 sm:p-1 rounded-md text-white shrink-0" style={{ backgroundColor: primary }}>
                     <Globe className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="text-[10px] sm:text-[11px] break-all" dir="ltr">{personal.website.replace(/^https?:\/\//, '')}</span>
+                  <span className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.website.replace(/^https?:\/\//, '')}</span>
                 </div>
               )}
               {personal.linkedin && (
@@ -644,7 +652,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div className="p-0.5 sm:p-1 rounded-md text-white shrink-0" style={{ backgroundColor: primary }}>
                     <Linkedin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="text-[10px] sm:text-[11px] break-all" dir="ltr">{personal.linkedin.replace(/^https?:\/\//, '')}</span>
+                  <span className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.linkedin.replace(/^https?:\/\//, '')}</span>
                 </div>
               )}
               {personal.github && (
@@ -652,7 +660,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   <div className="p-0.5 sm:p-1 rounded-md text-white shrink-0" style={{ backgroundColor: primary }}>
                     <Github className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="text-[10px] sm:text-[11px] break-all" dir="ltr">{personal.github.replace(/^https?:\/\//, '')}</span>
+                  <span className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.github.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.github.replace(/^https?:\/\//, '')}</span>
                 </div>
               )}
             </div>
@@ -672,7 +680,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   {skills.map((skill) => (
                     <div key={skill.id} className="space-y-0.5">
                       <div className="flex justify-between items-start text-[11px] gap-2 sm:text-xs font-semibold text-slate-800">
-                        <span className="break-words whitespace-normal">{skill.name}</span>
+                        <span className="break-words">{skill.name}</span>
                         <span className="text-slate-500 shrink-0 ml-1">{t.levels[skill.level] || skill.level}</span>
                       </div>
                       <div className="w-full h-1 sm:h-1.5 bg-slate-200 rounded-full overflow-hidden">
@@ -704,7 +712,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                 <div className="space-y-0.5 sm:space-y-1">
                   {languages.map((item) => (
                     <div key={item.id} className="flex justify-between items-start text-[11px] gap-2 sm:text-xs gap-1">
-                      <span className="font-semibold text-slate-800 break-words whitespace-normal">{item.name}</span>
+                      <span className="font-semibold text-slate-800 break-words">{item.name}</span>
                       <span className="text-slate-500 shrink-0">{t.proficiencies[item.proficiency] || item.proficiency}</span>
                     </div>
                   ))}
@@ -753,7 +761,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
 
             {/* Profile Statement */}
             {summary && (
-              <section className="relative pl-2.5 sm:pl-3 border-l-2 sm:border-l-3" style={{ borderColor: primary }}>
+              <section className="relative pl-2.5 sm:pl-3 border-s-2 sm:border-s-2" style={{ borderColor: primary }}>
                 <p className="text-xs sm:text-[13px] leading-[1.7] text-slate-700 text-justify break-words">
                   {renderText(summary)}
                 </p>
@@ -773,31 +781,31 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
 
                 <div className="space-y-4 sm:space-y-6">
                   {experiences.map((exp) => (
-                    <div key={exp.id} className="relative pl-3 sm:pl-3.5 border-l-2" style={{ borderColor: `${primary}40` }}>
+                    <div key={exp.id} className="relative pl-3 sm:pl-3.5 border-s-2" style={{ borderColor: `${primary}40` }}>
                       <span
-                        className="absolute -left-[5px] top-1 w-2 h-2 rounded-full border border-white"
+                        className="absolute -start-[5px] top-1 w-2 h-2 rounded-full border border-white"
                         style={{ backgroundColor: primary }}
                       />
                       <div className="flex flex-nowrap justify-between items-baseline gap-1">
                         <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{exp.position}</h3>
-                        <span className="text-[11px] sm:text-xs font-bold text-white px-1.5 sm:px-2 py-0.5 rounded-full shrink-0" style={{ backgroundColor: primary }}>
+                        <span className="text-[12px] font-bold text-white px-1.5 sm:px-2 py-0.5 rounded-full shrink-0" style={{ backgroundColor: primary }}>
                           {exp.startDate} – {exp.current ? t.present : exp.endDate}
                         </span>
                       </div>
 
-                      <div className="text-[11px] sm:text-xs font-semibold text-slate-700 my-0.5 flex flex-wrap items-center gap-1">
+                      <div className="text-[12px] font-semibold text-slate-700 my-0.5 flex flex-wrap items-center gap-1">
                         <span style={{ color: primary }} className="break-words">{exp.company}</span>
                         {exp.location && <span className="text-slate-400 font-normal"> • {exp.location}</span>}
                       </div>
 
                       {exp.description && (
-                        <p className="text-[11px] sm:text-xs text-slate-600 mb-1 leading-[1.7] break-words">
+                        <p className="text-[12px] text-slate-600 mb-1 leading-[1.7] break-words">
                           {renderText(exp.description)}
                         </p>
                       )}
 
                       {exp.highlights && exp.highlights.length > 0 && (
-                        <ul className="list-disc list-outside ml-3.5 space-y-0.5 text-[11px] sm:text-xs text-slate-600 leading-snug break-words">
+                        <ul className="list-disc list-outside ml-3.5 space-y-0.5 text-[12px] text-slate-600 leading-snug break-words">
                           {exp.highlights.filter(Boolean).map((h, i) => (
                             <li key={i}>{h}</li>
                           ))}
@@ -825,19 +833,19 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                     <div key={edu.id} className="p-1.5 sm:p-2 rounded-xl bg-slate-50/80 border border-slate-200/80">
                       <div className="flex flex-nowrap justify-between items-baseline gap-1">
                         <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{edu.degree}</h3>
-                        <span className="text-[11px] sm:text-xs text-slate-500 font-medium shrink-0">
+                        <span className="text-[12px] text-slate-500 font-medium shrink-0">
                           {edu.startDate} – {edu.endDate}
                         </span>
                       </div>
-                      <div className="text-[11px] sm:text-xs font-medium text-slate-700 flex flex-wrap items-center gap-1">
+                      <div className="text-[12px] font-medium text-slate-700 flex flex-wrap items-center gap-1">
                         <span style={{ color: primary }} className="break-words">{edu.institution}</span>
                         {edu.location && <span className="text-slate-400">, {edu.location}</span>}
                       </div>
                       {edu.fieldOfStudy && (
-                        <p className="text-[11px] sm:text-xs text-slate-500 italic mt-0.5 break-words">{edu.fieldOfStudy}</p>
+                        <p className="text-[12px] text-slate-500 italic mt-0.5 break-words">{edu.fieldOfStudy}</p>
                       )}
                       {edu.gpa && (
-                        <p className="text-[11px] sm:text-xs font-medium text-slate-600 mt-0.5">
+                        <p className="text-[12px] font-medium text-slate-600 mt-0.5">
                           {t.education.gpa}: {edu.gpa}
                         </p>
                       )}
@@ -874,7 +882,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
 
           {/* Inline ATS-friendly Contact row separated by pipes */}
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-2 text-xs sm:text-[13px] text-slate-600">
-            {personal.email && <span dir="ltr" className="break-all">{personal.email}</span>}
+            {personal.email && <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.email)}`}>{personal.email}</span>}
             {personal.phone && (
               <>
                 <span className="text-slate-400">|</span>
@@ -890,19 +898,19 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
             {personal.linkedin && (
               <>
                 <span className="text-slate-400">|</span>
-                <span dir="ltr" className="break-all">{personal.linkedin.replace(/^https?:\/\//, '')}</span>
+                <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ''))}`}>{personal.linkedin.replace(/^https?:\/\//, '')}</span>
               </>
             )}
             {personal.github && (
               <>
                 <span className="text-slate-400">|</span>
-                <span dir="ltr" className="break-all">{personal.github.replace(/^https?:\/\//, '')}</span>
+                <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.github.replace(/^https?:\/\//, ''))}`}>{personal.github.replace(/^https?:\/\//, '')}</span>
               </>
             )}
             {personal.website && (
               <>
                 <span className="text-slate-400">|</span>
-                <span dir="ltr" className="break-all">{personal.website.replace(/^https?:\/\//, '')}</span>
+                <span dir="ltr" className={`break-words [word-break:break-word] ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ''))}`}>{personal.website.replace(/^https?:\/\//, '')}</span>
               </>
             )}
           </div>
@@ -937,19 +945,19 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                       <span className="font-semibold" style={{ color: primary }}>{exp.company}</span>
                       {exp.location && <span className="text-slate-500 font-normal">, {exp.location}</span>}
                     </div>
-                    <span className="text-[11px] sm:text-xs text-slate-500 font-medium shrink-0">
+                    <span className="text-[12px] text-slate-500 font-medium shrink-0">
                       {exp.startDate} – {exp.current ? t.present : exp.endDate}
                     </span>
                   </div>
 
                   {exp.description && (
-                    <p className="text-[11px] sm:text-xs text-slate-600 mt-0.5 leading-[1.7] break-words">
+                    <p className="text-[12px] text-slate-600 mt-0.5 leading-[1.7] break-words">
                       {renderText(exp.description)}
                     </p>
                   )}
 
                   {exp.highlights && exp.highlights.length > 0 && (
-                    <ul className={`list-disc list-outside ${isRTL ? 'mr-4' : 'ml-4'} space-y-0.5 text-[11px] sm:text-xs text-slate-600 leading-snug mt-0.5 break-words`}>
+                    <ul className={`list-disc list-outside ${isRTL ? 'mr-4' : 'ml-4'} space-y-0.5 text-[12px] text-slate-600 leading-snug mt-0.5 break-words`}>
                       {exp.highlights.filter(Boolean).map((h, i) => (
                         <li key={i}>{h}</li>
                       ))}
@@ -978,7 +986,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                     {edu.location && <span className="text-slate-500">, {edu.location}</span>}
                     {edu.fieldOfStudy && <span className="text-slate-500 italic"> ({edu.fieldOfStudy})</span>}
                   </div>
-                  <div className="text-[11px] sm:text-xs text-slate-500 shrink-0">
+                  <div className="text-[12px] text-slate-500 shrink-0">
                     <span>{edu.startDate} – {edu.endDate}</span>
                     {edu.gpa && <span className="ml-1 text-slate-600">({edu.gpa})</span>}
                   </div>
@@ -994,7 +1002,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
             <h2 className="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-slate-900 mb-1 pb-0.5 border-b border-slate-200">
               {t.skills.sectionTitle}
             </h2>
-            <div className="flex flex-wrap gap-1 text-[11px] sm:text-xs">
+            <div className="flex flex-wrap gap-1 text-[12px]">
               {skills.map((skill) => (
                 <span
                   key={skill.id}
@@ -1014,10 +1022,10 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
               <h2 className="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-slate-900 mb-1 pb-0.5 border-b border-slate-200">
                 {t.languages.sectionTitle}
               </h2>
-              <div className="text-[11px] sm:text-xs text-slate-600 space-y-0.5">
+              <div className="text-[12px] text-slate-600 space-y-0.5">
                 {languages.map((item) => (
                   <div key={item.id} className="flex justify-between items-start gap-2">
-                    <span className="font-medium text-slate-800 break-words whitespace-normal">{item.name}</span>
+                    <span className="font-medium text-slate-800 break-words">{item.name}</span>
                     <span className="shrink-0">{t.proficiencies[item.proficiency] || item.proficiency}</span>
                   </div>
                 ))}
@@ -1030,7 +1038,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
               <h2 className="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-slate-900 mb-1 pb-0.5 border-b border-slate-200">
                 {t.hobbies.sectionTitle}
               </h2>
-              <p className="text-[11px] sm:text-xs text-slate-600 break-words">
+              <p className="text-[12px] text-slate-600 break-words">
                 {hobbies.join(' • ')}
               </p>
             </div>
@@ -1061,14 +1069,525 @@ const MinimalistTemplateWrapper: React.FC<CVDocumentProps> = (props) => {
   return <CVDocumentInner {...props} />;
 };
 
+
+// =========================================================================
+// PREMIUM TEMPLATES
+// =========================================================================
+
+
+
+
+
+
+const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
+  const { t, isRTL } = useLanguage();
+  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+  const primary = theme?.primaryColor || '#b45309';
+  const scaleClass = '';
+
+  return (
+    <div id={id} dir={isRTL ? 'rtl' : 'ltr'} className={`bg-white text-slate-800 ${isRTL ? 'font-arabic' : 'font-sans'} overflow-hidden min-h-[1123px] w-full max-w-[794px] mx-auto shadow-sm grid grid-cols-[38%_62%] ${scaleClass}`}>
+      {/* Sidebar */}
+      <div className="bg-slate-900 text-white py-8 px-5 sm:px-6 flex flex-col gap-6 text-start min-w-0">
+        <div className="flex justify-center mb-2">
+          <div className="w-32 h-32 shrink-0 rounded-full overflow-hidden border-[3px] p-1 flex items-center justify-center" style={{ borderColor: primary }}>
+            {personal.avatarUrl ? (
+              <img src={personal.avatarUrl} alt="Profile" className="w-full h-full rounded-full object-cover bg-slate-800" crossOrigin="anonymous" />
+            ) : (
+              <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center text-3xl text-white/50 font-light">{personal.fullName?.charAt(0) || ''}</div>
+            )}
+          </div>
+        </div>
+
+        {/* Contact Info */}
+        <div className="w-full min-w-0">
+          <div className="mb-4">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-white bg-slate-800 px-3 py-1.5 inline-block border-s-2" style={{ borderColor: primary }}>
+              {t.personal.sectionTitle || 'Contact'}
+            </h2>
+          </div>
+          <div className="space-y-3 text-[12px] text-white/90 text-start w-full px-2.5 min-w-0">
+            {personal.email && <div className="flex items-center gap-3 min-w-0"><div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: primary }}><Mail className="w-3 h-3 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 leading-tight ${getDynamicTextSize(personal.email)}`} dir="ltr">{personal.email}</span></div>}
+            {personal.phone && <div className="flex items-center gap-3 min-w-0"><div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: primary }}><Phone className="w-3 h-3 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 leading-tight ${getDynamicTextSize(personal.phone)}`} dir="ltr">{personal.phone}</span></div>}
+            {personal.location && <div className="flex items-center gap-3 min-w-0"><div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: primary }}><MapPin className="w-3 h-3 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 leading-tight ${getDynamicTextSize(personal.location)}`}>{personal.location}</span></div>}
+            {personal.website && <div className="flex items-center gap-3 min-w-0"><div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: primary }}><Globe className="w-3 h-3 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 leading-tight ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.website.replace(/^https?:\/\//, '')}</span></div>}
+            {personal.linkedin && <div className="flex items-center gap-3 min-w-0"><div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: primary }}><Linkedin className="w-3 h-3 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 leading-tight ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.linkedin.replace(/^https?:\/\//, '')}</span></div>}
+          </div>
+        </div>
+
+        {/* Skills */}
+        {skills && skills.length > 0 && (
+          <div className="mt-2 w-full min-w-0">
+            <div className="mb-4">
+              <h2 className="text-[11px] font-bold uppercase tracking-widest text-white bg-slate-800 px-3 py-1.5 inline-block border-s-2" style={{ borderColor: primary }}>
+                {t.skills.sectionTitle}
+              </h2>
+            </div>
+            <div className="space-y-3 px-1 text-start min-w-0">
+              {skills.map(s => (
+                <div key={s.id} className="w-full min-w-0">
+                  <div className="flex justify-between text-[11px] font-medium mb-1 min-w-0">
+                    <span className="break-words min-w-0 flex-1">{s.name}</span>
+                  </div>
+                  <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full" style={{ 
+                      backgroundColor: primary,
+                      width: s.level === 'Expert' ? '100%' : s.level === 'Advanced' ? '80%' : s.level === 'Intermediate' ? '60%' : '40%' 
+                    }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Languages */}
+        {languages && languages.length > 0 && (
+          <div className="mt-2 w-full min-w-0">
+            <div className="mb-4">
+              <h2 className="text-[11px] font-bold uppercase tracking-widest text-white bg-slate-800 px-3 py-1.5 inline-block border-s-2" style={{ borderColor: primary }}>
+                {t.languages.sectionTitle}
+              </h2>
+            </div>
+            <div className="space-y-3 px-1 text-start min-w-0">
+              {languages.map(l => (
+                <div key={l.id} className="flex justify-between items-center text-[11px] min-w-0">
+                  <span className="font-semibold break-words min-w-0 flex-1">{l.name}</span>
+                  <span className="opacity-70 text-[10px] shrink-0 ms-2">{t.proficiencies[l.proficiency] || l.proficiency}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content */}
+      <div className="p-8 bg-white flex flex-col text-start min-w-0">
+        <header className="mb-8 mt-2 min-w-0">
+          <h1 className="text-3xl font-black text-slate-900 mb-2 uppercase tracking-wider break-words">{personal.fullName}</h1>
+          <p className="text-[13px] font-bold tracking-widest uppercase break-words" style={{ color: primary }}>{personal.jobTitle}</p>
+        </header>
+
+        {summary && (
+          <section className="mb-8 text-start min-w-0">
+            <p className="text-[12px] text-slate-600 leading-[1.7] break-words whitespace-pre-wrap">{renderText(summary)}</p>
+          </section>
+        )}
+
+        {experiences && experiences.length > 0 && (
+          <section className="mb-8 min-w-0">
+            <div className="mb-5">
+              <h2 className="inline-block border border-slate-300 text-slate-800 uppercase px-4 py-1.5 text-[11px] font-bold tracking-widest">
+                {t.experience.sectionTitle}
+              </h2>
+            </div>
+            <div className="space-y-6 min-w-0">
+              {experiences.map(exp => (
+                <div key={exp.id} className="min-w-0">
+                  <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                    <h3 className="text-[13px] font-bold text-slate-900 uppercase break-words">{exp.position}</h3>
+                    <span className="text-[10px] font-bold tracking-widest text-slate-500 shrink-0">
+                      {exp.startDate} – {exp.current ? t.present : exp.endDate}
+                    </span>
+                  </div>
+                  <h4 className="text-xs font-bold mb-2 break-words" style={{ color: primary }}>
+                    {exp.company}{exp.location ? ` | ${exp.location}` : ''}
+                  </h4>
+                  {exp.description && <p className="text-[12px] text-slate-600 mb-2 leading-[1.6] break-words whitespace-pre-wrap">{renderText(exp.description)}</p>}
+                  {exp.highlights && exp.highlights.length > 0 && (
+                    <ul className="list-disc list-outside ms-4 text-[12px] text-slate-600 space-y-1 min-w-0">
+                      {exp.highlights.filter(Boolean).map((h, i) => <li key={i} className="ps-1 break-words">{h}</li>)}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {education && education.length > 0 && (
+          <section className="min-w-0">
+            <div className="mb-5">
+              <h2 className="inline-block border border-slate-300 text-slate-800 uppercase px-4 py-1.5 text-[11px] font-bold tracking-widest">
+                {t.education.sectionTitle}
+              </h2>
+            </div>
+            <div className="space-y-5 min-w-0">
+              {education.map(edu => (
+                <div key={edu.id} className="min-w-0">
+                  <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                    <h3 className="text-[13px] font-bold text-slate-900 uppercase break-words">{edu.degree}</h3>
+                    <span className="text-[10px] font-bold tracking-widest text-slate-500 shrink-0">
+                      {edu.startDate} – {edu.endDate}
+                    </span>
+                  </div>
+                  <h4 className="text-xs font-bold break-words" style={{ color: primary }}>{edu.institution}</h4>
+                  {(edu.fieldOfStudy || edu.gpa) && (
+                    <p className="text-[12px] text-slate-500 mt-1 font-medium break-words">
+                      {edu.fieldOfStudy} {edu.gpa && `• GPA: ${edu.gpa}`}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
+  const { t, isRTL } = useLanguage();
+  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+  const primary = theme?.primaryColor || '#b45309';
+  const scaleClass = '';
+
+  return (
+    <div id={id} dir={isRTL ? 'rtl' : 'ltr'} className={`bg-white text-slate-800 ${isRTL ? 'font-arabic' : 'font-sans'} overflow-hidden min-h-[1123px] w-full max-w-[794px] mx-auto shadow-sm flex flex-col ${scaleClass}`}>
+      
+      {/* Top Header */}
+      <div className="w-full bg-slate-800 flex flex-row items-center px-8 relative" style={{ minHeight: '140px' }}>
+         <div className="w-[130px] shrink-0 relative h-full">
+            {/* Avatar overlapping bottom */}
+            <div className="absolute -bottom-16 start-0 w-32 h-32 rounded-full overflow-hidden border-[6px] border-white shadow-lg bg-slate-100 flex items-center justify-center z-20">
+               {personal.avatarUrl ? (
+                  <img src={personal.avatarUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
+               ) : (
+                  <span className="text-3xl text-slate-400 font-light">{personal.fullName?.charAt(0) || ''}</span>
+               )}
+            </div>
+         </div>
+         
+         {/* Name & Title */}
+         <div className="flex-1 flex flex-col justify-center ps-4 z-10 text-start min-w-0">
+            <h1 className="text-3xl font-black text-white mb-2 tracking-wider uppercase break-words">{personal.fullName}</h1>
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="h-0.5 w-8 bg-white/50 shrink-0"></span>
+              <p className="text-[11px] font-bold tracking-widest uppercase text-white break-words">{personal.jobTitle}</p>
+            </div>
+         </div>
+      </div>
+
+      <div className="grid grid-cols-[62%_38%] flex-1 w-full bg-white relative z-0">
+        {/* Main Content (Left) */}
+        <div className="pt-28 ps-8 pe-6 pb-8 flex flex-col text-start bg-white border-e border-slate-100 min-w-0">
+          <div className="flex flex-col gap-8 w-full min-w-0">
+            {summary && (
+              <section className="min-w-0">
+                <h2 className="text-[13px] font-bold text-slate-800 mb-3 flex items-center gap-3">
+                  <span className="w-5 h-5 shrink-0 rounded flex items-center justify-center" style={{ backgroundColor: primary }}>
+                     <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+                  </span>
+                  {t.summary.sectionTitle}
+                </h2>
+                <p className="text-[12px] leading-[1.7] text-slate-600 border-s-2 ms-2.5 ps-4 border-slate-200 break-words whitespace-pre-wrap">{renderText(summary)}</p>
+              </section>
+            )}
+
+            {experiences && experiences.length > 0 && (
+              <section className="min-w-0">
+                <h2 className="text-[13px] font-bold text-slate-800 mb-5 flex items-center gap-3">
+                  <span className="w-5 h-5 shrink-0 rounded flex items-center justify-center" style={{ backgroundColor: primary }}>
+                     <Briefcase className="w-3 h-3 text-white" />
+                  </span>
+                  {t.experience.sectionTitle}
+                </h2>
+                <div className="space-y-6 ms-2.5 border-s-2 border-slate-200 ps-4 min-w-0">
+                  {experiences.map(exp => (
+                    <div key={exp.id} className="min-w-0">
+                      <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                        <h3 className="text-[13px] font-bold text-slate-900 break-words">{exp.position}</h3>
+                        <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0">
+                          {exp.startDate} – {exp.current ? t.present : exp.endDate}
+                        </span>
+                      </div>
+                      <h4 className="text-xs font-bold mb-2 break-words" style={{ color: primary }}>
+                        {exp.company}
+                      </h4>
+                      {exp.description && <p className="text-[12px] text-slate-600 mb-2 leading-[1.6] break-words whitespace-pre-wrap">{renderText(exp.description)}</p>}
+                      {exp.highlights && exp.highlights.length > 0 && (
+                        <ul className="list-disc list-outside ms-4 text-[12px] text-slate-600 space-y-1 min-w-0">
+                          {exp.highlights.filter(Boolean).map((h, i) => <li key={i} className="ps-1 break-words">{h}</li>)}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {education && education.length > 0 && (
+              <section className="min-w-0">
+                <h2 className="text-[13px] font-bold text-slate-800 mb-5 flex items-center gap-3">
+                  <span className="w-5 h-5 shrink-0 rounded flex items-center justify-center" style={{ backgroundColor: primary }}>
+                     <GraduationCap className="w-3 h-3 text-white" />
+                  </span>
+                  {t.education.sectionTitle}
+                </h2>
+                <div className="space-y-5 ms-2.5 border-s-2 border-slate-200 ps-4 min-w-0">
+                  {education.map(edu => (
+                    <div key={edu.id} className="min-w-0">
+                      <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                        <h3 className="text-[13px] font-bold text-slate-800 break-words">{edu.degree}</h3>
+                        <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0">{edu.startDate} – {edu.endDate}</span>
+                      </div>
+                      <h4 className="text-xs font-bold break-words" style={{ color: primary }}>{edu.institution}</h4>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
+
+        {/* Sidebar (Right) */}
+        <div className="bg-slate-800 text-white pt-10 pb-8 flex flex-col text-start shadow-inner relative z-0 min-w-0">
+          <div className="flex flex-col gap-8 w-full min-w-0">
+            
+            {/* Ribbons */}
+            <div className="w-full min-w-0">
+              <div className="flex w-full">
+                 <h2 className="text-[11px] font-bold uppercase tracking-widest text-white shadow-md rounded-e-full py-1.5 ps-6 pe-4 mb-5 inline-block" style={{ backgroundColor: primary }}>
+                   {t.personal.sectionTitle || 'Contact'}
+                 </h2>
+              </div>
+              <div className="space-y-3 px-6 sm:px-8 text-[12px] min-w-0">
+                {personal.email && <div className="flex items-center gap-2.5 min-w-0"><Mail className="w-3.5 h-3.5 shrink-0"/> <span className={`break-words [word-break:break-word] min-w-0 ${getDynamicTextSize(personal.email)}`} dir="ltr">{personal.email}</span></div>}
+                {personal.phone && <div className="flex items-center gap-2.5 min-w-0"><Phone className="w-3.5 h-3.5 shrink-0"/> <span className={`break-words [word-break:break-word] min-w-0 ${getDynamicTextSize(personal.phone)}`} dir="ltr">{personal.phone}</span></div>}
+                {personal.location && <div className="flex items-center gap-2.5 min-w-0"><MapPin className="w-3.5 h-3.5 shrink-0"/> <span className={`break-words [word-break:break-word] min-w-0 ${getDynamicTextSize(personal.location)}`}>{personal.location}</span></div>}
+                {personal.linkedin && <div className="flex items-center gap-2.5 min-w-0"><Linkedin className="w-3.5 h-3.5 shrink-0"/> <span className={`break-words [word-break:break-word] min-w-0 ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.linkedin.replace(/^https?:\/\//, '')}</span></div>}
+              </div>
+            </div>
+
+            {skills && skills.length > 0 && (
+              <div className="w-full min-w-0">
+                <div className="flex w-full">
+                   <h2 className="text-[11px] font-bold uppercase tracking-widest text-white shadow-md rounded-e-full py-1.5 ps-6 pe-4 mb-5 inline-block" style={{ backgroundColor: primary }}>
+                     {t.skills.sectionTitle}
+                   </h2>
+                </div>
+                <div className="space-y-4 px-6 min-w-0">
+                  {skills.map(s => (
+                    <div key={s.id} className="w-full min-w-0">
+                      <div className="flex justify-between text-[11px] font-medium mb-1 min-w-0">
+                        <span className="break-words min-w-0 flex-1">{s.name}</span>
+                      </div>
+                      <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full bg-white" style={{ 
+                          width: s.level === 'Expert' ? '100%' : s.level === 'Advanced' ? '80%' : s.level === 'Intermediate' ? '60%' : '40%' 
+                        }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {languages && languages.length > 0 && (
+              <div className="w-full min-w-0">
+                <div className="flex w-full">
+                   <h2 className="text-[11px] font-bold uppercase tracking-widest text-white shadow-md rounded-e-full py-1.5 ps-6 pe-4 mb-5 inline-block" style={{ backgroundColor: primary }}>
+                     {t.languages.sectionTitle}
+                   </h2>
+                </div>
+                <div className="space-y-3 px-6 min-w-0">
+                  {languages.map(l => (
+                    <div key={l.id} className="flex justify-between items-center text-[11px] min-w-0">
+                      <span className="font-semibold break-words min-w-0 flex-1">{l.name}</span>
+                      <span className="opacity-70 text-[10px] shrink-0 ms-2">{t.proficiencies[l.proficiency] || l.proficiency}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
+  const { t, isRTL } = useLanguage();
+  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+  const primary = theme?.primaryColor || '#ca8a04';
+  const scaleClass = '';
+
+  return (
+    <div id={id} dir={isRTL ? 'rtl' : 'ltr'} className={`bg-slate-950 text-slate-200 ${isRTL ? 'font-arabic' : 'font-sans'} overflow-hidden min-h-[1123px] w-full max-w-[794px] mx-auto shadow-sm grid grid-cols-[38%_62%] ${scaleClass}`}>
+      
+      {/* Sidebar */}
+      <div className="bg-[#111111] p-6 md:p-8 flex flex-col gap-8 text-start border-e border-slate-800 min-w-0">
+        
+        {/* Hexagon Profile Pic */}
+        <div className="w-full flex justify-center mt-2 mb-2">
+           <div className="w-32 h-32 shrink-0 aspect-square relative" style={{ backgroundColor: primary, clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)' }}>
+              <div className="absolute inset-[3px] bg-slate-950 flex items-center justify-center overflow-hidden" style={{ clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)' }}>
+                {personal.avatarUrl ? (
+                  <img src={personal.avatarUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
+                ) : (
+                  <span className="text-4xl text-slate-500 font-light">{personal.fullName?.charAt(0) || ''}</span>
+                )}
+              </div>
+           </div>
+        </div>
+
+        {/* Contact Info */}
+        <div className="w-full min-w-0">
+            <div className="flex justify-center mb-5 w-full">
+               <h2 className="inline-block border rounded-full px-5 py-1.5 text-[11px] font-bold uppercase tracking-widest text-center" style={{ borderColor: primary, color: primary }}>
+                 {t.personal.sectionTitle || 'Contact'}
+               </h2>
+            </div>
+            <div className="space-y-4 text-[12px] text-slate-300 w-full min-w-0 px-2.5">
+              {personal.email && <div className="flex items-center gap-3 min-w-0"><div className="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0"><Mail className="w-3.5 h-3.5 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 ${getDynamicTextSize(personal.email)}`} dir="ltr">{personal.email}</span></div>}
+              {personal.phone && <div className="flex items-center gap-3 min-w-0"><div className="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0"><Phone className="w-3.5 h-3.5 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 ${getDynamicTextSize(personal.phone)}`} dir="ltr">{personal.phone}</span></div>}
+              {personal.location && <div className="flex items-center gap-3 min-w-0"><div className="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0"><MapPin className="w-3.5 h-3.5 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 leading-tight ${getDynamicTextSize(personal.location)}`}>{personal.location}</span></div>}
+              {personal.website && <div className="flex items-center gap-3 min-w-0"><div className="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0"><Globe className="w-3.5 h-3.5 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.website.replace(/^https?:\/\//, '')}</span></div>}
+              {personal.linkedin && <div className="flex items-center gap-3 min-w-0"><div className="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0"><Linkedin className="w-3.5 h-3.5 text-white" /></div><span className={`break-words [word-break:break-word] flex-1 min-w-0 ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ''))}`} dir="ltr">{personal.linkedin.replace(/^https?:\/\//, '')}</span></div>}
+            </div>
+        </div>
+
+        {/* Skills */}
+        {skills && skills.length > 0 && (
+          <div className="w-full min-w-0">
+            <div className="flex justify-center mb-5 w-full">
+               <h2 className="inline-block border rounded-full px-5 py-1.5 text-[11px] font-bold uppercase tracking-widest text-center" style={{ borderColor: primary, color: primary }}>
+                 {t.skills.sectionTitle}
+               </h2>
+            </div>
+            <div className="space-y-4 w-full min-w-0">
+              {skills.map(s => (
+                <div key={s.id} className="w-full min-w-0">
+                  <div className="flex justify-between text-[11px] font-bold text-white mb-1.5 uppercase tracking-wider min-w-0">
+                    <span className="break-words min-w-0 flex-1">{s.name}</span>
+                  </div>
+                  <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full" style={{ 
+                      backgroundColor: primary,
+                      width: s.level === 'Expert' ? '100%' : s.level === 'Advanced' ? '80%' : s.level === 'Intermediate' ? '60%' : '40%' 
+                    }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Languages */}
+        {languages && languages.length > 0 && (
+          <div className="w-full min-w-0">
+            <div className="flex justify-center mb-5 w-full">
+               <h2 className="inline-block border rounded-full px-5 py-1.5 text-[11px] font-bold uppercase tracking-widest text-center" style={{ borderColor: primary, color: primary }}>
+                 {t.languages.sectionTitle}
+               </h2>
+            </div>
+            <div className="space-y-3 w-full min-w-0">
+              {languages.map(l => (
+                <div key={l.id} className="flex justify-between items-center text-[11px] min-w-0">
+                  <span className="font-bold text-white break-words min-w-0 flex-1">{l.name}</span>
+                  <span className="text-slate-400 text-[10px] shrink-0 ms-2">{t.proficiencies[l.proficiency] || l.proficiency}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content */}
+      <div className="p-8 bg-slate-950 flex flex-col text-start min-w-0">
+        <header className="mb-8 mt-2 pb-6 border-b border-slate-800 min-w-0">
+          <h1 className="text-3xl font-black text-white mb-2 uppercase tracking-wide leading-none break-words">{personal.fullName}</h1>
+          <p className="text-[13px] font-bold tracking-widest uppercase break-words" style={{ color: primary }}>{personal.jobTitle}</p>
+        </header>
+
+        {summary && (
+          <section className="mb-8 w-full min-w-0">
+            <div className="mb-5 w-full">
+               <h2 className="inline-block border rounded-full px-5 py-1.5 text-[11px] font-bold uppercase tracking-widest" style={{ borderColor: primary, color: primary }}>
+                 {t.summary.sectionTitle}
+               </h2>
+            </div>
+            <p className="text-[11px] sm:text-[12px] leading-[1.7] text-slate-300 break-words whitespace-pre-wrap">{renderText(summary)}</p>
+          </section>
+        )}
+
+        {experiences && experiences.length > 0 && (
+          <section className="mb-8 w-full min-w-0">
+            <div className="mb-5 w-full">
+               <h2 className="inline-block border rounded-full px-5 py-1.5 text-[11px] font-bold uppercase tracking-widest" style={{ borderColor: primary, color: primary }}>
+                 {t.experience.sectionTitle}
+               </h2>
+            </div>
+            <div className="space-y-7 w-full min-w-0">
+              {experiences.map(exp => (
+                <div key={exp.id} className="w-full min-w-0">
+                  <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                    <h3 className="text-[13px] font-bold text-white leading-snug break-words">{exp.position}</h3>
+                    <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0 xl:text-end mt-1 xl:mt-0">{exp.startDate} – {exp.current ? t.present : exp.endDate}</span>
+                  </div>
+                  <h4 className="text-[11px] text-slate-400 mt-1 break-words">{exp.company}{exp.location ? ` | ${exp.location}` : ''}</h4>
+                  {exp.description && <p className="text-[11px] sm:text-[12px] text-slate-400 leading-[1.6] mt-2.5 break-words whitespace-pre-wrap">{renderText(exp.description)}</p>}
+                  {exp.highlights && exp.highlights.length > 0 && (
+                    <ul className="list-disc list-outside ms-4 mt-2 text-[11px] sm:text-[12px] text-slate-400 space-y-1.5 min-w-0">
+                      {exp.highlights.filter(Boolean).map((h, i) => <li key={i} className="ps-1 break-words">{h}</li>)}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {education && education.length > 0 && (
+          <section className="w-full min-w-0">
+            <div className="mb-5 w-full">
+               <h2 className="inline-block border rounded-full px-5 py-1.5 text-[11px] font-bold uppercase tracking-widest" style={{ borderColor: primary, color: primary }}>
+                 {t.education.sectionTitle}
+               </h2>
+            </div>
+            <div className="space-y-6 w-full min-w-0">
+              {education.map(edu => (
+                <div key={edu.id} className="w-full min-w-0">
+                  <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                    <h3 className="text-[13px] font-bold text-white leading-snug break-words">{edu.degree}</h3>
+                    <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0 xl:text-end mt-1 xl:mt-0">{edu.startDate} – {edu.endDate}</span>
+                  </div>
+                  <h4 className="text-[11px] text-slate-400 mt-1 break-words">{edu.institution}</h4>
+                  {(edu.fieldOfStudy || edu.gpa) && (
+                    <p className="text-[11px] text-slate-500 mt-1.5 font-medium break-words">
+                      {edu.fieldOfStudy} {edu.gpa && `• GPA: ${edu.gpa}`}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+      </div>
+    </div>
+  );
+};
+
 export const CVDocument: React.FC<CVDocumentProps> = (props) => {
   const templateId = props.data.theme?.template || props.data.theme?.layoutStyle || 'modern';
 
   // Mount a completely distinct React Component based on the template.
   // This prevents React from reusing DOM nodes between structurally different templates,
   // ensuring CSS grids, flexboxes, and specific styles do not collapse or inherit.
+
   switch (templateId) {
+    case 'executive-modern':
+      return <ExecutiveModernTemplate {...props} />;
+    case 'creative-minimal':
+      return <CreativeMinimalTemplate {...props} />;
+    case 'corporate-elite':
+      return <CorporateEliteTemplate {...props} />;
     case 'executive':
+
       return <ExecutiveTemplateWrapper {...props} />;
     case 'creative':
       return <CreativeTemplateWrapper {...props} />;

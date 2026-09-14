@@ -46,7 +46,7 @@ export interface LanguageItem {
   proficiency: 'Native' | 'Fluent' | 'Professional' | 'Intermediate' | 'Basic';
 }
 
-export type TemplateId = 'modern' | 'executive' | 'creative' | 'minimalist';
+export type TemplateId = 'modern' | 'executive' | 'creative' | 'minimalist' | 'executive-modern' | 'creative-minimal' | 'corporate-elite';
 
 export interface CVTheme {
   primaryColor: string;

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TemplateId } from '../types';
 import { useLanguage } from '../context/LanguageContext';
-import { Check, Sparkles, LayoutTemplate, Eye } from 'lucide-react';
+import { Check, Sparkles, LayoutTemplate, Eye, Lock, PlayCircle, Unlock } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface TemplateSelectorProps {
@@ -14,13 +14,17 @@ interface TemplateSelectorProps {
 interface TemplateItemDef {
   id: TemplateId;
   iconAccent: string;
+  isPremium?: boolean;
 }
 
 const TEMPLATE_DEFS: TemplateItemDef[] = [
-  { id: 'modern', iconAccent: '#8b5cf6' },
-  { id: 'executive', iconAccent: '#1e3a8a' },
-  { id: 'creative', iconAccent: '#ec4899' },
-  { id: 'minimalist', iconAccent: '#0f172a' },
+  { id: 'modern', iconAccent: '#8b5cf6', isPremium: false },
+  { id: 'executive', iconAccent: '#1e3a8a', isPremium: false },
+  { id: 'creative', iconAccent: '#ec4899', isPremium: false },
+  { id: 'minimalist', iconAccent: '#0f172a', isPremium: false },
+  { id: 'executive-modern', iconAccent: '#0f172a', isPremium: true },
+  { id: 'creative-minimal', iconAccent: '#f43f5e', isPremium: true },
+  { id: 'corporate-elite', iconAccent: '#1e40af', isPremium: true },
 ];
 
 /**
@@ -172,6 +176,62 @@ const TemplateMiniMockup: React.FC<{
     );
   }
 
+
+  if (templateId === 'executive-modern') {
+    return (
+      <div className="w-full h-32 bg-white rounded-lg border border-slate-200/80 shadow-xs flex overflow-hidden select-none">
+        <div className="w-1/3 bg-slate-900 flex flex-col items-center pt-3 pb-2 px-1">
+          <div className="w-8 h-8 rounded-full bg-slate-700 mb-2"></div>
+          <div className="h-1.5 w-10 bg-slate-500 rounded-xs mb-1"></div>
+          <div className="h-1 w-12 bg-slate-600 rounded-xs"></div>
+        </div>
+        <div className="w-2/3 p-2 flex flex-col gap-1.5">
+          <div className="h-1.5 w-16 rounded-xs" style={{ backgroundColor: accent }}></div>
+          <div className="h-1 w-full bg-slate-200 rounded-xs"></div>
+          <div className="h-1 w-5/6 bg-slate-200 rounded-xs"></div>
+          <div className="h-1.5 w-12 rounded-xs mt-1" style={{ backgroundColor: accent }}></div>
+          <div className="h-1 w-full bg-slate-200 rounded-xs"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (templateId === 'creative-minimal') {
+    return (
+      <div className="w-full h-32 bg-white rounded-lg p-2 border border-slate-200/80 shadow-xs flex flex-col overflow-hidden select-none items-center text-center">
+        <div className="w-8 h-8 rounded-full mb-1.5" style={{ border: `2px solid ${accent}` }}></div>
+        <div className="h-1.5 w-16 bg-slate-800 rounded-xs mb-1"></div>
+        <div className="h-1 w-20 bg-slate-400 rounded-xs mb-2"></div>
+        <div className="w-full flex gap-1 justify-center mb-1.5">
+          <div className="h-1 w-8 rounded-full" style={{ backgroundColor: `${accent}40` }}></div>
+          <div className="h-1 w-8 rounded-full" style={{ backgroundColor: `${accent}40` }}></div>
+          <div className="h-1 w-8 rounded-full" style={{ backgroundColor: `${accent}40` }}></div>
+        </div>
+        <div className="h-1 w-full bg-slate-100 rounded-xs"></div>
+      </div>
+    );
+  }
+
+  if (templateId === 'corporate-elite') {
+    return (
+      <div className="w-full h-32 bg-white rounded-lg border border-slate-200/80 shadow-xs flex flex-row-reverse overflow-hidden select-none">
+        <div className="w-1/3 bg-slate-50 border-l border-slate-200 flex flex-col pt-3 px-1.5 items-end">
+          <div className="w-7 h-7 rounded-md bg-slate-300 mb-2"></div>
+          <div className="h-1 w-10 bg-slate-400 rounded-xs mb-0.5"></div>
+          <div className="h-1 w-8 bg-slate-400 rounded-xs"></div>
+        </div>
+        <div className="w-2/3 p-2.5 flex flex-col gap-2 justify-center">
+          <div className="h-2 w-16 bg-slate-800 rounded-xs"></div>
+          <div className="h-1.5 w-12 rounded-xs" style={{ backgroundColor: accent }}></div>
+          <div className="space-y-0.5">
+            <div className="h-1 w-full bg-slate-200 rounded-xs"></div>
+            <div className="h-1 w-10/12 bg-slate-200 rounded-xs"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Minimalist Clean
   return (
     <div className="w-full h-32 bg-white rounded-lg p-2.5 border border-slate-200/80 shadow-xs flex flex-col justify-between overflow-hidden select-none">
@@ -206,6 +266,7 @@ const TemplateMiniMockup: React.FC<{
           <span className="h-1.5 w-7 rounded-xs" style={{ backgroundColor: `${accent}30` }} />
         </div>
       </div>
+
     </div>
   );
 };
@@ -217,6 +278,46 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   onOpenPreview,
 }) => {
   const { t, isRTL } = useLanguage();
+  const [unlockedTemplates, setUnlockedTemplates] = useState<string[]>([]);
+  const [adModalTemplate, setAdModalTemplate] = useState<TemplateId | null>(null);
+  const [isWatchingAd, setIsWatchingAd] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('unlocked_premium_templates');
+      if (stored) {
+        setUnlockedTemplates(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.warn('Failed to load unlocked templates', e);
+    }
+  }, []);
+
+  const handleSelectTemplateClick = (tmpl: TemplateItemDef) => {
+    if (tmpl.isPremium && !unlockedTemplates.includes(tmpl.id)) {
+      setAdModalTemplate(tmpl.id);
+    } else {
+      onSelectTemplate(tmpl.id);
+    }
+  };
+
+  const handleWatchAd = () => {
+    setIsWatchingAd(true);
+    // Simulate watching a rewarded ad (e.g., 2 seconds)
+    setTimeout(() => {
+      setIsWatchingAd(false);
+      if (adModalTemplate) {
+        const newUnlocked = [...unlockedTemplates, adModalTemplate];
+        setUnlockedTemplates(newUnlocked);
+        try {
+          localStorage.setItem('unlocked_premium_templates', JSON.stringify(newUnlocked));
+        } catch(e) {}
+        onSelectTemplate(adModalTemplate);
+        setAdModalTemplate(null);
+      }
+    }, 2000);
+  };
+
 
   return (
     <div className="w-full max-w-full space-y-4">
@@ -255,7 +356,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
           return (
             <div
               key={tmpl.id}
-              onClick={() => onSelectTemplate(tmpl.id)}
+              onClick={() => handleSelectTemplateClick(tmpl)}
               className={`relative group rounded-2xl border p-4 transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 text-start select-none ${
                 isSelected
                   ? 'bg-violet-50/60 border-violet-600 shadow-md ring-2 ring-violet-500/30'
@@ -282,7 +383,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 ) : (
                   <span className="text-[11px] font-medium text-slate-400 group-hover:text-slate-600 flex items-center gap-1">
                     <Sparkles className="w-3 h-3 opacity-60" />
-                    <span>{t.templates.selectButton}</span>
+                    <>{tmpl.isPremium && !unlockedTemplates.includes(tmpl.id) ? <span className="flex items-center gap-1"><Lock className="w-3 h-3" /><span>{isRTL ? 'فتح القالب (إعلان)' : 'Unlock (Ad)'}</span></span> : <span>{t.templates.selectButton}</span>}</>
                   </span>
                 )}
               </div>
@@ -328,7 +429,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 id={`btn-select-template-${tmpl.id}`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onSelectTemplate(tmpl.id);
+                  handleSelectTemplateClick(tmpl);
                 }}
                 className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                   isSelected
@@ -342,13 +443,58 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                     <span>{t.templates.selectedButton}</span>
                   </>
                 ) : (
-                  <span>{t.templates.selectButton}</span>
+                  <>{tmpl.isPremium && !unlockedTemplates.includes(tmpl.id) ? <span className="flex items-center gap-1"><Lock className="w-3 h-3" /><span>{isRTL ? 'فتح القالب (إعلان)' : 'Unlock (Ad)'}</span></span> : <span>{t.templates.selectButton}</span>}</>
                 )}
               </button>
             </div>
           );
         })}
       </div>
+
+      {adModalTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 text-center">
+            <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4 text-violet-600">
+              <Lock className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 mb-2">
+              {isRTL ? 'قالب مميز' : 'Premium Template'}
+            </h3>
+            <p className="text-sm text-slate-600 mb-6">
+              {isRTL
+                ? 'شاهد إعلاناً قصيراً لفتح هذا القالب المميز مجاناً واستخدامه في سيرتك الذاتية.'
+                : 'Watch a short rewarded ad to unlock this premium template for free and use it for your CV.'}
+            </p>
+            
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={handleWatchAd}
+                disabled={isWatchingAd}
+                className="w-full py-3 rounded-xl text-sm font-bold text-white bg-violet-600 hover:bg-violet-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isWatchingAd ? (
+                  <span className="animate-pulse">{isRTL ? 'جاري العرض...' : 'Watching...'}</span>
+                ) : (
+                  <>
+                    <PlayCircle className="w-5 h-5" />
+                    <span>{isRTL ? 'مشاهدة الإعلان' : 'Watch Ad Now'}</span>
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setAdModalTemplate(null)}
+                disabled={isWatchingAd}
+                className="w-full py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                {isRTL ? 'إلغاء' : 'Cancel'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
