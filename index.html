@@ -9,15 +9,63 @@
     <meta property="og:description" content="Mobile-first CV builder optimized for Android smartphones with smooth wizard navigation, real-time scaled A4 preview, and Google Drive backup." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#8b5cf6" />
+    <meta name="theme-color" content="#5b21b6" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json" />
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased selection:bg-violet-500 selection:text-white">
+    <style>
+      #pwa-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background-color: #5b21b6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease-out;
+      }
+      #pwa-splash img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      #pwa-splash h1 {
+        color: white;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-top: 1.5rem;
+        letter-spacing: 0.05em;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(0.95); }
+      }
+    </style>
+    <div id="pwa-splash">
+      <img src="/pwa-logo-192.png" alt="CVita App Icon" />
+      <h1>CVita</h1>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+  
+    <script>
+      window.addEventListener('load', () => {
+        const splash = document.getElementById('pwa-splash');
+        if (splash) {
+          splash.style.opacity = '0';
+          setTimeout(() => {
+            splash.remove();
+          }, 500); // Wait for transition
+        }
+      });
+    </script>
   </body>
 </html>
 

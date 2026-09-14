@@ -3,8 +3,8 @@
   "short_name": "CVita",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#8b5cf6",
+  "background_color": "#5b21b6",
+  "theme_color": "#5b21b6",
   "orientation": "portrait",
   "description": "Mobile-first CV builder optimized for Android smartphones with smooth wizard navigation",
   "icons": [
