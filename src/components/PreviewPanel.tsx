@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CVData } from '../types';
 import { CVDocument } from './CVDocument';
+import { AdModal } from './AdModal';
 import { showRewardedAd } from '../lib/admob';
 import {
   ZoomIn,
@@ -41,6 +42,8 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     message?: string;
   } | null>(null);
 
+  const [showAdModal, setShowAdModal] = useState(false);
+
   // Auto-dismiss success notification after 5 seconds
   useEffect(() => {
     if (printStatus?.show && !printStatus.isError) {
@@ -79,12 +82,15 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   };
 
   // Direct download PDF handler using html2canvas-pro and jspdf (supports Tailwind 4 oklch colors)
-  const handleDownloadPdf = async (e?: React.MouseEvent | React.TouchEvent) => {
+    const handleDownloadPdf = (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
+    setShowAdModal(true);
+  };
 
+  const executeDownloadPdf = async () => {
     const safeName = (data.personal?.fullName || 'CV').trim();
     const filename = `${safeName.replace(/\s+/g, '_')}_CV.pdf`;
 
@@ -390,6 +396,20 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           <span className="truncate">{t.previewControls.downloadPdf}</span>
         </button>
       </div>
+
+      <AdModal 
+        isOpen={showAdModal} 
+        onClose={() => setShowAdModal(false)} 
+        onRewardGranted={() => {
+          setShowAdModal(false);
+          // Small timeout to allow modal animation to clear before blocking main thread
+          setTimeout(() => {
+            executeDownloadPdf();
+          }, 300);
+        }} 
+        title={t.previewControls.downloadPdf || "Watch Ad to Download"}
+        description={isRTL ? "شاهد هذا الإعلان القصير لدعمنا قبل تحميل سيرتك الذاتية." : "Support CVita by watching a quick sponsor message before downloading your PDF."}
+      />
     </div>
   );
 };
