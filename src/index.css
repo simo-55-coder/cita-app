@@ -595,38 +595,108 @@ html, body {
   padding-bottom: 0.85rem !important;
 }
 
-/* Smart Page-Filling Mode (Auto-Expand) - Preserves layout direction and structure */
-#interactive-cv-preview[data-auto-fill="true"] {
+/* ==========================================================================
+   Smart Page-Filling Mode (Auto-Fill / Auto-Expand)
+   Works consistently and responsively across all standard & premium templates
+   Preserves template layout (e.g. flex-row for Creative & sidebars, flex-col for linear)
+   ========================================================================== */
+
+[data-auto-fill="true"] {
   min-height: 1120px !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
 }
 
-#interactive-cv-preview[data-auto-fill="true"] section,
-#print-cv-document[data-auto-fill="true"] section {
-  margin-bottom: 1.25rem !important;
+/* Sections breathe out to span the page height */
+[data-auto-fill="true"] section {
+  margin-bottom: var(--cv-section-gap, 1.85rem) !important;
 }
 
-#interactive-cv-preview[data-auto-fill="true"] p,
-#print-cv-document[data-auto-fill="true"] p {
-  line-height: 1.68 !important;
-  margin-bottom: 0.3rem !important;
+[data-auto-fill="true"] section:last-child {
+  margin-bottom: 0 !important;
 }
 
-#interactive-cv-preview[data-auto-fill="true"] li,
-#print-cv-document[data-auto-fill="true"] li {
+/* Paragraphs, descriptions, summaries have expanded line-height and comfortable margins */
+[data-auto-fill="true"] p {
+  line-height: var(--cv-body-lh, 1.8) !important;
+  margin-bottom: 0.45rem !important;
+}
+
+/* Timeline, experiences, and education items */
+[data-auto-fill="true"] .space-y-3 > * + *,
+[data-auto-fill="true"] .space-y-3\.5 > * + *,
+[data-auto-fill="true"] .space-y-4 > * + * {
+  margin-top: var(--cv-item-gap, 1.35rem) !important;
+}
+
+[data-auto-fill="true"] .space-y-5 > * + *,
+[data-auto-fill="true"] .space-y-6 > * + *,
+[data-auto-fill="true"] .space-y-7 > * + *,
+[data-auto-fill="true"] .space-y-8 > * + * {
+  margin-top: var(--cv-item-gap, 1.65rem) !important;
+}
+
+/* Lists and bullet points */
+[data-auto-fill="true"] ul {
+  margin-top: 0.45rem !important;
+  margin-bottom: 0.45rem !important;
+}
+
+[data-auto-fill="true"] li {
+  margin-bottom: 0.35rem !important;
+  line-height: 1.72 !important;
+}
+
+/* Section titles and accent lines have balanced breathing room */
+[data-auto-fill="true"] h2 {
+  margin-bottom: 0.75rem !important;
+  padding-bottom: 0.35rem !important;
+}
+
+[data-auto-fill="true"] header {
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+/* Skills, badges, tags have refined spacing in auto-fill */
+[data-auto-fill="true"] .skill-badge,
+[data-auto-fill="true"] .interest-badge,
+[data-auto-fill="true"] .hobby-badge,
+[data-auto-fill="true"] .tag {
+  padding-top: 0.35rem !important;
+  padding-bottom: 0.35rem !important;
   margin-bottom: 0.25rem !important;
-  line-height: 1.62 !important;
 }
 
-#interactive-cv-preview[data-auto-fill="true"] .space-y-4 > * + *,
-#interactive-cv-preview[data-auto-fill="true"] .space-y-3 > * + *,
-#print-cv-document[data-auto-fill="true"] .space-y-4 > * + *,
-#print-cv-document[data-auto-fill="true"] .space-y-3 > * + * {
-  margin-top: 0.875rem !important;
+[data-auto-fill="true"] .space-y-1 > * + *,
+[data-auto-fill="true"] .space-y-1\.5 > * + * {
+  margin-top: 0.6rem !important;
 }
 
-#interactive-cv-preview[data-auto-fill="true"] .border-b-2,
-#print-cv-document[data-auto-fill="true"] .border-b-2 {
-  margin-bottom: 0.5rem !important;
-  padding-bottom: 0.3rem !important;
+/* Print exact A4 containment */
+@media print {
+  [data-auto-fill="true"] {
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Template-specific refinement: creative-minimal auto-fill */
+[data-template="creative-minimal"][data-auto-fill="true"] section {
+  margin-bottom: 1.35rem !important;
+}
+[data-template="creative-minimal"][data-auto-fill="true"] section:last-child {
+  margin-bottom: 0 !important;
+}
+[data-template="creative-minimal"][data-auto-fill="true"] p {
+  line-height: 1.68 !important;
+  margin-bottom: 0.25rem !important;
+}
+[data-template="creative-minimal"][data-auto-fill="true"] .space-y-4 > * + *,
+[data-template="creative-minimal"][data-auto-fill="true"] .space-y-5 > * + *,
+[data-template="creative-minimal"][data-auto-fill="true"] .space-y-6 > * + * {
+  margin-top: 1.15rem !important;
 }
 

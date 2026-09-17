@@ -17,51 +17,6 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-export const getCustomizationData = (theme?: CVTheme, isPrint?: boolean) => {
-  const fontSize = theme?.fontSize || 'normal';
-  const fontSizeScale = theme?.fontSizeScale ?? (
-    fontSize === 'small' ? 0.9 :
-    fontSize === 'large' ? 1.1 :
-    fontSize === 'xlarge' ? 1.2 : 1.0
-  );
-  const spacing = theme?.spacing || 'normal';
-  const isAutoFill = !!theme?.autoFillPage;
-
-  return {
-    fontSize,
-    fontSizeScale,
-    spacing,
-    isAutoFill,
-    dataAttrs: {
-      'data-font-size': fontSize,
-      'data-spacing': spacing,
-      'data-auto-fill': isAutoFill ? 'true' : 'false',
-    },
-    cssVars: {
-      ['--cv-font-scale' as any]: fontSizeScale,
-      ['--cv-spacing-mode' as any]: spacing,
-    },
-  };
-};
-
-const getDynamicTextSize = (text?: string, baseSize: string = 'text-[12px]') => {
-  if (!text) return baseSize;
-  const len = text.length;
-  if (len > 35) return 'text-[9.5px] leading-tight';
-  if (len > 25) return 'text-[10.5px] leading-tight';
-  return baseSize;
-};
-
-const renderText = (text?: string) => {
-  if (!text) return null;
-  return text.split(/\\n|\n/).map((line, idx, arr) => (
-    <React.Fragment key={idx}>
-      {line}
-      {idx < arr.length - 1 && <br />}
-    </React.Fragment>
-  ));
-};
-
 export interface ContentDensityInfo {
   isSparse: boolean;
   isDense: boolean;
@@ -138,6 +93,77 @@ export const getContentDensity = (data: CVData): ContentDensityInfo => {
   };
 };
 
+export const getCustomizationData = (
+  theme?: CVTheme,
+  isPrint?: boolean,
+  contentDensity?: ContentDensityInfo
+) => {
+  const fontSize = theme?.fontSize || 'normal';
+  const baseScale = theme?.fontSizeScale ?? (
+    fontSize === 'small' ? 0.9 :
+    fontSize === 'large' ? 1.1 :
+    fontSize === 'xlarge' ? 1.2 : 1.0
+  );
+  const spacing = theme?.spacing || 'normal';
+  const isAutoFill = !!theme?.autoFillPage;
+
+  // Adapt font scale slightly when auto-fill is active to give typography balanced presence
+  let effectiveFontScale = baseScale;
+  if (isAutoFill) {
+    if (Math.abs(baseScale - 1.0) < 0.05 && fontSize === 'normal') {
+      effectiveFontScale = contentDensity?.isDense ? 1.02 : contentDensity?.isSparse ? 1.10 : 1.07;
+    } else {
+      effectiveFontScale = Math.min(1.25, baseScale * (contentDensity?.isDense ? 1.0 : 1.05));
+    }
+  }
+
+  const sectionGap = isAutoFill
+    ? (contentDensity?.isSparse ? '2.35rem' : contentDensity?.isDense ? '1.5rem' : '1.95rem')
+    : (spacing === 'compact' ? '0.65rem' : spacing === 'relaxed' ? '1.75rem' : '1.25rem');
+
+  const itemGap = isAutoFill
+    ? (contentDensity?.isSparse ? '1.5rem' : contentDensity?.isDense ? '1.1rem' : '1.35rem')
+    : (spacing === 'compact' ? '0.5rem' : spacing === 'relaxed' ? '1.25rem' : '1.0rem');
+
+  return {
+    fontSize,
+    fontSizeScale: effectiveFontScale,
+    spacing,
+    isAutoFill,
+    dataAttrs: {
+      'data-font-size': fontSize,
+      'data-spacing': spacing,
+      'data-auto-fill': isAutoFill ? 'true' : 'false',
+    },
+    cssVars: {
+      ['--cv-font-scale' as any]: effectiveFontScale,
+      ['--cv-spacing-mode' as any]: spacing,
+      ['--cv-auto-fill' as any]: isAutoFill ? '1' : '0',
+      ['--cv-section-gap' as any]: sectionGap,
+      ['--cv-item-gap' as any]: itemGap,
+      ['--cv-body-lh' as any]: isAutoFill ? '1.8' : '1.65',
+    },
+  };
+};
+
+const getDynamicTextSize = (text?: string, baseSize: string = 'text-[12px]') => {
+  if (!text) return baseSize;
+  const len = text.length;
+  if (len > 35) return 'text-[9.5px] leading-tight';
+  if (len > 25) return 'text-[10.5px] leading-tight';
+  return baseSize;
+};
+
+const renderText = (text?: string) => {
+  if (!text) return null;
+  return text.split(/\\n|\n/).map((line, idx, arr) => (
+    <React.Fragment key={idx}>
+      {line}
+      {idx < arr.length - 1 && <br />}
+    </React.Fragment>
+  ));
+};
+
 interface CVDocumentProps {
   data: CVData;
   id?: string;
@@ -166,7 +192,9 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
   };
 
   // Dynamic responsive A4 container: uses fluid relative heights, removes clipping
-  const { fontSize, fontSizeScale, spacing, isAutoFill, dataAttrs, cssVars } = getCustomizationData(theme, isPrint);
+  const { fontSize, fontSizeScale, spacing, isAutoFill, dataAttrs, cssVars } = getCustomizationData(theme, isPrint, { isSparse, isDense, score: 0, mainScore: 0, isMainSparse });
+  const effectiveSparse = isAutoFill || isSparse;
+  const effectiveMainSparse = isAutoFill || isMainSparse;
 
   const spacingPaddingClass =
     spacing === 'compact'
@@ -204,7 +232,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
         id={id}
         dir={isRTL ? 'rtl' : 'ltr'}
         {...dataAttrs}
-        className={`${containerClasses} mx-auto`}
+        className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-between' : ''} mx-auto`}
         style={{ fontFamily: getFontFamily(), ...cssVars }}
       >
           {/* Top Banner / Header */}
@@ -293,9 +321,9 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           )}
 
           {/* Main 2-Column Grid */}
-          <div className="flex flex-row gap-5 min-h-0">
+          <div className={`flex flex-row gap-5 min-h-0 ${isAutoFill ? 'flex-1 justify-between' : ''}`}>
             {/* Main Column (Experience & Education) */}
-            <div className={`w-[64%] shrink-0 min-w-0 ${isDense ? 'space-y-3.5' : isMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
+            <div className={`w-[64%] shrink-0 min-w-0 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : effectiveMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
               {/* Work Experience */}
               {experiences && experiences.length > 0 && (
                 <section className="min-w-0">
@@ -390,7 +418,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
             </div>
 
             {/* Sidebar Column (Skills, Languages, Hobbies) */}
-            <div className={`w-[32%] shrink-0 min-w-0 ${isDense ? 'space-y-3.5' : 'space-y-4 sm:space-y-5'}`}>
+            <div className={`w-[32%] shrink-0 min-w-0 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : 'space-y-4 sm:space-y-5'}`}>
               {/* Skills */}
               {skills && skills.length > 0 && (
                 <section className="min-w-0">
@@ -485,11 +513,22 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
         id={id}
         dir={isRTL ? 'rtl' : 'ltr'}
         {...dataAttrs}
-        className={`${containerClasses} mx-auto`}
+        className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-between' : ''} mx-auto`}
         style={{ fontFamily: getFontFamily(), ...cssVars }}
       >
           {/* Formal Centered Header */}
           <header className="text-center pb-3 sm:pb-4 mb-4 sm:mb-6 border-b-2 border-double shrink-0" style={{ borderColor: primary }}>
+            {personal.avatarUrl && (
+              <div className="flex justify-center mb-3 shrink-0">
+                <img
+                  src={personal.avatarUrl}
+                  alt={personal.fullName}
+                  referrerPolicy="no-referrer"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 shadow-sm"
+                  style={{ borderColor: primary }}
+                />
+              </div>
+            )}
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-wider uppercase text-slate-900 leading-tight break-words">
               {personal.fullName || (isRTL ? 'اسم المرشح' : 'Candidate Name')}
             </h1>
@@ -538,7 +577,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
             </div>
           </header>
 
-          <div className={`w-full min-w-0 ${isDense ? 'space-y-3.5' : isSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
+          <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : effectiveSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
             {/* Executive Summary */}
             {summary && (
               <section className="min-w-0">
@@ -809,7 +848,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
       >
           {/* Accent Sidebar (34% width on desktop/print, full width on mobile) */}
           <aside
-            className="w-[34%] min-w-0 p-4 sm:p-5 flex flex-col justify-start shrink-0"
+            className={`w-[34%] min-w-0 p-4 sm:p-5 flex flex-col shrink-0 ${isAutoFill ? 'justify-between h-full min-h-[297mm]' : 'justify-start'}`}
             style={{
               backgroundColor: `${primary}10`,
               borderRight: isRTL ? 'none' : `2px solid ${primary}25`,
@@ -841,7 +880,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
               </div>
             </div>
 
-            <div className={`w-full min-w-0 ${isDense ? 'space-y-3 mt-2' : 'space-y-3.5 sm:space-y-4 mt-2'}`}>
+            <div className={`w-full min-w-0 flex flex-col ${isAutoFill ? 'flex-1 justify-between space-y-4 sm:space-y-6 mt-3' : isDense ? 'space-y-3 mt-2' : 'space-y-3.5 sm:space-y-4 mt-2'}`}>
               {/* Contact Details */}
               <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-[13px] text-slate-700 pt-1.5 sm:pt-2 border-t border-slate-200">
                 {personal.email && (
@@ -975,7 +1014,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           </aside>
 
           {/* Main Body (66% width) */}
-          <main className="w-[66%] flex-1 min-w-0 p-4 sm:p-6 md:p-7 flex flex-col justify-start">
+          <main className={`w-[66%] flex-1 min-w-0 p-4 sm:p-6 md:p-7 flex flex-col ${isAutoFill ? 'justify-between h-full min-h-[297mm]' : 'justify-start'}`}>
             {/* Header Title & Tagline */}
             <div className="border-b-2 pb-2 sm:pb-3 mb-2 sm:mb-3.5 shrink-0" style={{ borderColor: `${primary}25` }}>
               <h1
@@ -989,7 +1028,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
               </div>
             </div>
 
-            <div className={`w-full min-w-0 flex-1 flex flex-col ${isDense ? 'space-y-3' : isMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
+            <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3' : effectiveMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
               {/* Profile Statement */}
               {summary && (
                 <section className={`relative pl-2.5 sm:pl-3 border-s-2 sm:border-s-2 ${isDense ? 'mb-1.5' : isMainSparse ? 'mb-3 sm:mb-4' : 'mb-2'}`} style={{ borderColor: primary }}>
@@ -1099,17 +1138,31 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
       id={id}
       dir={isRTL ? 'rtl' : 'ltr'}
       {...dataAttrs}
-      className={`${containerClasses} mx-auto`}
+      className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-between' : ''} mx-auto`}
       style={{ fontFamily: getFontFamily(), ...cssVars }}
     >
         {/* Clean Linear Header (Start-Aligned) */}
         <header className="pb-3 sm:pb-3.5 mb-4 sm:mb-6 border-b-2 shrink-0" style={{ borderColor: `${primary}35` }}>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 break-words">
-            {personal.fullName || (isRTL ? 'اسم المرشح' : 'Candidate Name')}
-          </h1>
-          <p className="text-xs sm:text-sm font-semibold mt-0.5 break-words" style={{ color: primary }}>
-            {personal.jobTitle || (isRTL ? 'المسمى الوظيفي' : 'Job Title')}
-          </p>
+          <div className="flex flex-row items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 break-words">
+                {personal.fullName || (isRTL ? 'اسم المرشح' : 'Candidate Name')}
+              </h1>
+              <p className="text-xs sm:text-sm font-semibold mt-0.5 break-words" style={{ color: primary }}>
+                {personal.jobTitle || (isRTL ? 'المسمى الوظيفي' : 'Job Title')}
+              </p>
+            </div>
+            {personal.avatarUrl && (
+              <div className="shrink-0">
+                <img
+                  src={personal.avatarUrl}
+                  alt={personal.fullName}
+                  referrerPolicy="no-referrer"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-slate-200 shadow-sm"
+                />
+              </div>
+            )}
+          </div>
 
           {/* Inline ATS-friendly Contact row separated by subtle pipes */}
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-2 text-xs sm:text-[13px] text-slate-600">
@@ -1157,7 +1210,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           </div>
         </header>
 
-        <div className={`w-full min-w-0 ${isDense ? 'space-y-3' : isSparse ? 'space-y-5.5 sm:space-y-6.5' : 'space-y-3.5 sm:space-y-4'}`}>
+        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3' : effectiveSparse ? 'space-y-5.5 sm:space-y-6.5' : 'space-y-3.5 sm:space-y-4'}`}>
           {/* Summary */}
           {summary && (
             <section className="min-w-0">
@@ -1411,8 +1464,9 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
   const { t, isRTL } = useLanguage();
   const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
   const primary = theme?.primaryColor || '#b45309';
-  const { isDense } = getContentDensity(data);
-  const { fontSize, fontSizeScale, spacing, isAutoFill, dataAttrs, cssVars } = getCustomizationData(theme, isPrint);
+  const density = getContentDensity(data);
+  const { isDense } = density;
+  const { fontSize, fontSizeScale, spacing, isAutoFill, dataAttrs, cssVars } = getCustomizationData(theme, isPrint, density);
   const scaleClass = '';
 
   return (
@@ -1428,7 +1482,7 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
       } ${scaleClass}`}
     >
       {/* Sidebar */}
-      <div className="w-[38%] shrink-0 bg-slate-900 text-white py-8 px-5 sm:px-6 flex flex-col text-start min-w-0">
+      <div className={`w-[38%] shrink-0 bg-slate-900 text-white py-8 px-5 sm:px-6 flex flex-col text-start min-w-0 ${isAutoFill ? 'justify-between h-full min-h-[1120px]' : ''}`}>
         <div className="flex justify-center mb-2 shrink-0">
           <div className="w-32 h-32 shrink-0 rounded-full overflow-hidden border-[3px] p-1 flex items-center justify-center" style={{ borderColor: primary }}>
             {personal.avatarUrl ? (
@@ -1439,7 +1493,7 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
           </div>
         </div>
 
-        <div className={`w-full min-w-0 ${isDense ? 'space-y-4' : 'space-y-6'}`}>
+        <div className={`w-full min-w-0 flex flex-col ${isAutoFill ? 'flex-1 justify-between space-y-6' : isDense ? 'space-y-4' : 'space-y-6'}`}>
           {/* Contact Info */}
           <div className="w-full min-w-0">
             <div className="mb-4">
@@ -1504,13 +1558,13 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
       </div>
 
       {/* Main Content */}
-      <div className="w-[62%] shrink-0 p-8 bg-white flex flex-col text-start min-w-0">
+      <div className={`w-[62%] shrink-0 p-8 bg-white flex flex-col text-start min-w-0 ${isAutoFill ? 'justify-between h-full min-h-[1120px]' : ''}`}>
         <header className="mb-6 mt-2 min-w-0 shrink-0">
           <h1 className="text-3xl font-black text-slate-900 mb-2 uppercase tracking-wider break-words">{personal.fullName}</h1>
           <p className="text-[13px] font-bold tracking-widest uppercase break-words" style={{ color: primary }}>{personal.jobTitle}</p>
         </header>
 
-        <div className={`w-full min-w-0 ${isDense ? 'space-y-4' : 'space-y-8'}`}>
+        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-4' : 'space-y-8'}`}>
           {summary && (
             <section className="text-start min-w-0">
               <p className="text-[12px] text-slate-600 break-words whitespace-pre-wrap leading-[1.7]">{renderText(summary)}</p>
@@ -1585,16 +1639,26 @@ const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
   const { t, isRTL } = useLanguage();
   const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
   const primary = theme?.primaryColor || '#b45309';
-  const { isDense } = getContentDensity(data);
-  const { fontSize, fontSizeScale, spacing, isAutoFill, dataAttrs, cssVars } = getCustomizationData(theme, isPrint);
+  const density = getContentDensity(data);
+  const { isDense } = density;
+  const isAutoFill = Boolean(theme?.autoFillPage);
+  const { dataAttrs, cssVars } = getCustomizationData(theme, isPrint, density);
   const scaleClass = '';
+
+  const getFontFamily = () => {
+    if (isRTL) {
+      return theme?.fontFamily === 'serif' ? 'Noto Kufi Arabic, serif' : 'IBM Plex Sans Arabic, sans-serif';
+    }
+    return theme?.fontFamily === 'serif' ? 'Playfair Display, serif' : 'Plus Jakarta Sans, sans-serif';
+  };
 
   return (
     <div
       id={id}
       dir={isRTL ? 'rtl' : 'ltr'}
       {...dataAttrs}
-      style={{ ...cssVars }}
+      data-template="creative-minimal"
+      style={{ fontFamily: getFontFamily(), ...cssVars }}
       className={`cv-premium-template bg-white text-slate-800 ${
         isRTL ? 'font-arabic' : 'font-sans'
       } overflow-hidden min-h-[1120px] w-[794px] min-w-[794px] max-w-[794px] mx-auto shadow-sm flex flex-col ${
@@ -1655,7 +1719,7 @@ const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
                       <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
                         <h3 className="text-[13px] font-bold text-slate-900 break-words">{exp.position}</h3>
                         <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0">
-                          {exp.startDate}  {exp.current ? t.present : exp.endDate}
+                          {exp.startDate} – {exp.current ? t.present : exp.endDate}
                         </span>
                       </div>
                       <h4 className="text-xs font-bold mb-2 break-words" style={{ color: primary }}>
@@ -1686,7 +1750,7 @@ const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
                     <div key={edu.id} className="min-w-0">
                       <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
                         <h3 className="text-[13px] font-bold text-slate-800 break-words">{edu.degree}</h3>
-                        <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0">{edu.startDate}  {edu.endDate}</span>
+                        <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0">{edu.startDate} – {edu.endDate}</span>
                       </div>
                       <h4 className="text-xs font-bold break-words" style={{ color: primary }}>{edu.institution}</h4>
                     </div>
@@ -1769,8 +1833,9 @@ const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }
   const { t, isRTL } = useLanguage();
   const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
   const primary = theme?.primaryColor || '#ca8a04';
-  const { isDense } = getContentDensity(data);
-  const { fontSize, fontSizeScale, spacing, isAutoFill, dataAttrs, cssVars } = getCustomizationData(theme, isPrint);
+  const density = getContentDensity(data);
+  const { isDense } = density;
+  const { fontSize, fontSizeScale, spacing, isAutoFill, dataAttrs, cssVars } = getCustomizationData(theme, isPrint, density);
   const scaleClass = '';
 
   return (
@@ -1787,7 +1852,7 @@ const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }
     >
       
       {/* Sidebar */}
-      <div className="w-[38%] shrink-0 bg-[#111111] p-6 md:p-8 flex flex-col text-start border-e border-slate-800 min-w-0">
+      <div className={`w-[38%] shrink-0 bg-[#111111] p-6 md:p-8 flex flex-col text-start border-e border-slate-800 min-w-0 ${isAutoFill ? 'justify-between h-full' : ''}`}>
         
         {/* Hexagon Profile Pic */}
         <div className="w-full flex justify-center mt-2 mb-4 shrink-0">
@@ -1802,7 +1867,7 @@ const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }
            </div>
         </div>
 
-        <div className={`w-full min-w-0 ${isDense ? 'space-y-4' : 'space-y-8'}`}>
+        <div className={`w-full min-w-0 flex flex-col ${isAutoFill ? 'flex-1 justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-4' : 'space-y-8'}`}>
           {/* Contact Info */}
           <div className="w-full min-w-0">
               <div className="flex justify-center mb-5 w-full">
@@ -1867,13 +1932,13 @@ const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }
       </div>
 
       {/* Main Content */}
-      <div className="w-[62%] shrink-0 p-8 bg-slate-950 flex flex-col text-start min-w-0">
+      <div className={`w-[62%] shrink-0 p-8 bg-slate-950 flex flex-col text-start min-w-0 ${isAutoFill ? 'justify-between h-full' : ''}`}>
         <header className="mb-6 mt-2 pb-6 border-b border-slate-800 min-w-0 shrink-0">
           <h1 className="text-3xl font-black text-white mb-2 uppercase tracking-wide leading-none break-words">{personal.fullName}</h1>
           <p className="text-[13px] font-bold tracking-widest uppercase break-words" style={{ color: primary }}>{personal.jobTitle}</p>
         </header>
 
-        <div className={`w-full min-w-0 ${isDense ? 'space-y-4' : 'space-y-8'}`}>
+        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-4' : 'space-y-8'}`}>
           {summary && (
             <section className="w-full min-w-0">
               <div className="mb-4 w-full">

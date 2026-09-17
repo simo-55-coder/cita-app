@@ -56,6 +56,11 @@ export const d = {
       avatarUrl: 'Profile Photo URL (Optional)',
       avatarPlaceholder: 'https://example.com/avatar.jpg',
       avatarNote: 'Portfolio, GitHub, and professional links',
+      uploadPhoto: 'Upload Photo',
+      removePhoto: 'Remove',
+      changePhoto: 'Change',
+      dragOrClick: 'Click to select or drag & drop photo',
+      photoHelp: 'Supports all image types & sizes (JPG, PNG, WEBP). Automatically optimized.',
     },
 
     // Summary Section
@@ -348,7 +353,7 @@ export const d = {
       checkExperience: 'At least 1 Work Experience (2+ recommended)',
       checkEducation: 'Education & Degree',
       checkSkills: 'At least 3 Key Skills',
-      checkLanguages: 'At least 1 Language',
+      checkLanguages: 'At least 2 Languages',
     },
   },
 
@@ -404,6 +409,11 @@ export const d = {
       avatarUrl: 'URL Photo de Profil (Facultatif)',
       avatarPlaceholder: 'https://exemple.com/photo.jpg',
       avatarNote: 'Portfolio, GitHub et liens professionnels',
+      uploadPhoto: 'Télécharger une photo',
+      removePhoto: 'Supprimer',
+      changePhoto: 'Changer',
+      dragOrClick: 'Cliquez ou glissez-déposez une photo',
+      photoHelp: 'Tous formats acceptés (JPG, PNG, WEBP). Optimisation automatique.',
     },
 
     // Summary Section
@@ -695,7 +705,7 @@ export const d = {
       checkExperience: 'Au moins 1 expérience professionnelle (2+ recommandé)',
       checkEducation: 'Formation & Diplôme',
       checkSkills: 'Au moins 3 compétences clés',
-      checkLanguages: 'Au moins 1 langue',
+      checkLanguages: 'Au moins 2 langues',
     },
   },
 
@@ -751,6 +761,11 @@ export const d = {
       avatarUrl: 'رابط الصورة الشخصية (اختياري)',
       avatarPlaceholder: 'https://example.com/avatar.jpg',
       avatarNote: 'روابط الأعمال والحسابات المهنية',
+      uploadPhoto: 'رفع صورة شخصية',
+      removePhoto: 'حذف الصورة',
+      changePhoto: 'تغيير الصورة',
+      dragOrClick: 'اضغط لاختيار صورة أو اسحبها هنا',
+      photoHelp: 'يدعم جميع أنواع وأحجام الصور (JPG، PNG، WEBP) مع تحسين وضبط تلقائي للحجم.',
     },
 
     // Summary Section
@@ -1042,7 +1057,7 @@ export const d = {
       checkExperience: 'خبرة عمل واحدة على الأقل (يُفضل خبرتان)',
       checkEducation: 'المؤهل الأكاديمي والجامعة',
       checkSkills: '3 مهارات أساسية على الأقل',
-      checkLanguages: 'لغة واحدة على الأقل',
+      checkLanguages: 'لغتان على الأقل',
     },
   },
 } as const;

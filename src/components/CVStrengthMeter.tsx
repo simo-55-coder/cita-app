@@ -54,7 +54,7 @@ export const CVStrengthMeter: React.FC<CVStrengthMeterProps> = ({ data, variant 
     {
       id: 'languages',
       label: t.strength.checkLanguages,
-      done: (data.languages?.length || 0) >= 1,
+      done: (data.languages?.length || 0) >= 2,
       weight: 5,
     },
   ];
