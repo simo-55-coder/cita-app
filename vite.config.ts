@@ -17,8 +17,8 @@ export default defineConfig(() => {
           name: 'CVita App',
           short_name: 'CVita',
           description: 'Professional Mobile CV Builder',
-          theme_color: '#5b21b6',
-          background_color: '#5b21b6',
+          theme_color: '#7C3AED',
+          background_color: '#7C3AED',
           display: 'standalone',
           start_url: '/cita-app/',
           icons: [
