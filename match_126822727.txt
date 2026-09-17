@@ -1,0 +1,1685 @@
+__ontent-Type: text/javascript
+Cache-Control: no-cache
+Etag: W/"2e535-vzll9Q3GwxSYLebts0TZKVMP4Ws"
+Date: Tue, 15 Sep 2026 22:10:17 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Content-Length: 373164
+
+import __vite__cjsImport0_react_jsxDevRuntime from "/cita-app/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=0acfbc2f"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+import __vite__cjsImport1_react from "/cita-app/node_modules/.vite/deps/react.js?v=0acfbc2f"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react;
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Linkedin,
+  Github,
+  Briefcase,
+  GraduationCap,
+  Code2,
+  Languages,
+  Heart
+} from "/cita-app/node_modules/.vite/deps/lucide-react.js?v=8cb26bf9";
+import { useLanguage } from "/cita-app/src/context/LanguageContext.tsx";
+const getDynamicTextSize = (text, baseSize = "text-[12px]") => {
+  if (!text) return baseSize;
+  const len = text.length;
+  if (len > 35) return "text-[9.5px] leading-tight";
+  if (len > 25) return "text-[10.5px] leading-tight";
+  return baseSize;
+};
+const renderText = (text) => {
+  if (!text) return null;
+  return text.split(/\\n|\n/).map((line, idx, arr) => /* @__PURE__ */ jsxDEV(React.Fragment, { children: [
+    line,
+    idx < arr.length - 1 && /* @__PURE__ */ jsxDEV("br", {}, void 0, false, {
+      fileName: "/app/applet/src/components/CVDocument.tsx",
+      lineNumber: 31,
+      columnNumber: 32
+    }, this)
+  ] }, idx, true, {
+    fileName: "/app/applet/src/components/CVDocument.tsx",
+    lineNumber: 29,
+    columnNumber: 5
+  }, this));
+};
+const CVDocumentInner = ({
+  data,
+  id = "cv-document",
+  isPrint = false
+}) => {
+  const { t, isRTL } = useLanguage();
+  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+  const primary = theme?.primaryColor || "#7c3aed";
+  const templateId = theme?.template || theme?.layoutStyle || "modern";
+  const getFontFamily = () => {
+    if (isRTL) {
+      return theme?.fontFamily === "serif" ? "Tajawal, Cairo, serif" : "Cairo, Tajawal, sans-serif";
+    }
+    return theme?.fontFamily === "serif" ? "Playfair Display, serif" : "Plus Jakarta Sans, sans-serif";
+  };
+  const containerClasses = `w-[794px] min-w-[794px] max-w-[794px] min-h-[297mm] h-auto bg-white text-slate-800 flex flex-col transition-all ${isRTL ? "font-arabic" : ""} ${isPrint ? "p-8 sm:p-10 shadow-none border-0" : "p-6 sm:p-8 md:p-10 shadow-xl rounded-sm border border-slate-200/90 select-none"}`;
+  const getSkillPercent = (level) => {
+    switch (level) {
+      case "Beginner":
+        return "30%";
+      case "Intermediate":
+        return "55%";
+      case "Advanced":
+        return "80%";
+      case "Expert":
+        return "100%";
+      default:
+        return "60%";
+    }
+  };
+  if (templateId === "modern") {
+    return /* @__PURE__ */ jsxDEV("div", { className: "w-full flex justify-center", children: /* @__PURE__ */ jsxDEV(
+      "div",
+      {
+        id,
+        dir: isRTL ? "rtl" : "ltr",
+        className: containerClasses,
+        style: { fontFamily: getFontFamily() },
+        children: [
+          /* @__PURE__ */ jsxDEV("header", { className: "border-b-2 pb-2.5 sm:pb-3.5 mb-4 sm:mb-6", style: { borderColor: `${primary}25` }, children: /* @__PURE__ */ jsxDEV("div", { className: "flex items-start justify-between gap-3 sm:gap-4", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ jsxDEV(
+                "h1",
+                {
+                  className: "text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight break-words",
+                  style: { color: primary },
+                  children: personal.fullName || (isRTL ? " " : "Candidate Name")
+                },
+                void 0,
+                false,
+                {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 99,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("p", { className: "text-xs sm:text-sm font-semibold text-slate-700 mt-0.5 break-words", children: personal.jobTitle || (isRTL ? " " : "Job Title") }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 105,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap items-center gap-y-1 gap-x-2.5 sm:gap-x-3.5 mt-2 text-xs sm:text-[13px] text-slate-500", children: [
+                personal.email && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1 min-w-0", children: [
+                  /* @__PURE__ */ jsxDEV(Mail, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 113,
+                    columnNumber: 23
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { dir: "ltr", className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.email)}`, children: personal.email }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 114,
+                    columnNumber: 23
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 112,
+                  columnNumber: 21
+                }, this),
+                personal.phone && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1 min-w-0", children: [
+                  /* @__PURE__ */ jsxDEV(Phone, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 119,
+                    columnNumber: 23
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { dir: "ltr", children: personal.phone }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 120,
+                    columnNumber: 23
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 118,
+                  columnNumber: 21
+                }, this),
+                personal.location && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1 min-w-0", children: [
+                  /* @__PURE__ */ jsxDEV(MapPin, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 125,
+                    columnNumber: 23
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.location)}`, children: personal.location }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 126,
+                    columnNumber: 23
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 124,
+                  columnNumber: 21
+                }, this),
+                personal.website && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1 min-w-0", children: [
+                  /* @__PURE__ */ jsxDEV(Globe, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 131,
+                    columnNumber: 23
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { dir: "ltr", className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ""))}`, children: personal.website.replace(/^https?:\/\//, "") }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 132,
+                    columnNumber: 23
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 130,
+                  columnNumber: 21
+                }, this),
+                personal.linkedin && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1 min-w-0", children: [
+                  /* @__PURE__ */ jsxDEV(Linkedin, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 137,
+                    columnNumber: 23
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { dir: "ltr", className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ""))}`, children: personal.linkedin.replace(/^https?:\/\//, "") }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 138,
+                    columnNumber: 23
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 136,
+                  columnNumber: 21
+                }, this),
+                personal.github && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1 min-w-0", children: [
+                  /* @__PURE__ */ jsxDEV(Github, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 143,
+                    columnNumber: 23
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { dir: "ltr", className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.github.replace(/^https?:\/\//, ""))}`, children: personal.github.replace(/^https?:\/\//, "") }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 144,
+                    columnNumber: 23
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 142,
+                  columnNumber: 21
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 110,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 98,
+              columnNumber: 15
+            }, this),
+            personal.avatarUrl && /* @__PURE__ */ jsxDEV("div", { className: "shrink-0", children: /* @__PURE__ */ jsxDEV(
+              "img",
+              {
+                src: personal.avatarUrl,
+                alt: personal.fullName,
+                referrerPolicy: "no-referrer",
+                className: "w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border-2 shadow-sm",
+                style: { borderColor: primary }
+              },
+              void 0,
+              false,
+              {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 153,
+                columnNumber: 19
+              },
+              this
+            ) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 152,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 97,
+            columnNumber: 13
+          }, this) }, void 0, false, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 96,
+            columnNumber: 11
+          }, this),
+          summary && /* @__PURE__ */ jsxDEV("section", { className: "mb-4 sm:mb-6 p-2 sm:p-2.5 rounded-xl bg-slate-50/80 border", style: { borderColor: `${primary}20` }, children: [
+            /* @__PURE__ */ jsxDEV(
+              "h2",
+              {
+                className: "text-[12px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5",
+                style: { color: primary },
+                children: /* @__PURE__ */ jsxDEV("span", { children: t.summary.sectionTitle }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 172,
+                  columnNumber: 17
+                }, this)
+              },
+              void 0,
+              false,
+              {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 168,
+                columnNumber: 15
+              },
+              this
+            ),
+            /* @__PURE__ */ jsxDEV("p", { className: "text-xs sm:text-[13px] leading-[1.7] text-slate-700 text-justify break-words", children: renderText(summary) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 174,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 167,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "flex flex-row gap-5", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "w-[64%] shrink-0 min-w-0 space-y-5 sm:space-y-7", children: [
+              experiences && experiences.length > 0 && /* @__PURE__ */ jsxDEV("section", { children: [
+                /* @__PURE__ */ jsxDEV(
+                  "h2",
+                  {
+                    className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-2 sm:mb-2.5 border-b flex items-center gap-1.5",
+                    style: { color: primary, borderColor: `${primary}30` },
+                    children: [
+                      /* @__PURE__ */ jsxDEV(Briefcase, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 191,
+                        columnNumber: 21
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("span", { children: t.experience.sectionTitle }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 192,
+                        columnNumber: 21
+                      }, this)
+                    ]
+                  },
+                  void 0,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 187,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("div", { className: "space-y-4 sm:space-y-6", children: experiences.map((exp) => /* @__PURE__ */ jsxDEV(
+                  "div",
+                  {
+                    className: `relative ${isRTL ? "pr-2.5 sm:pr-3 border-e-2" : "pl-2.5 sm:pl-3 border-s-2"}`,
+                    style: { borderColor: `${primary}40` },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", { className: "flex flex-nowrap justify-between items-baseline gap-1 mb-0.5", children: [
+                        /* @__PURE__ */ jsxDEV("h3", { className: "text-xs sm:text-[13px] font-bold text-slate-900 break-words", children: exp.position }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 205,
+                          columnNumber: 27
+                        }, this),
+                        /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0", children: [
+                          exp.startDate,
+                          "  ",
+                          exp.current ? t.present : exp.endDate
+                        ] }, void 0, true, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 206,
+                          columnNumber: 27
+                        }, this)
+                      ] }, void 0, true, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 204,
+                        columnNumber: 25
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("div", { className: "text-[12px] font-medium text-slate-700 mb-1 flex flex-wrap items-center gap-x-2 gap-y-0.5", children: [
+                        /* @__PURE__ */ jsxDEV("span", { className: "font-semibold break-words", style: { color: primary }, children: exp.company }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 211,
+                          columnNumber: 27
+                        }, this),
+                        exp.location && /* @__PURE__ */ jsxDEV("span", { className: "text-slate-400 break-words", children: [
+                          " ",
+                          exp.location
+                        ] }, void 0, true, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 212,
+                          columnNumber: 44
+                        }, this)
+                      ] }, void 0, true, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 210,
+                        columnNumber: 25
+                      }, this),
+                      exp.description && /* @__PURE__ */ jsxDEV("p", { className: "text-[12px] text-slate-600 mb-1 leading-[1.7] break-words", children: renderText(exp.description) }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 215,
+                        columnNumber: 27
+                      }, this),
+                      exp.highlights && exp.highlights.length > 0 && /* @__PURE__ */ jsxDEV("ul", { className: `list-disc list-outside ${isRTL ? "mr-3.5" : "ml-3.5"} space-y-0.5 text-[12px] text-slate-600 leading-snug break-words`, children: exp.highlights.filter(Boolean).map((h, i) => /* @__PURE__ */ jsxDEV("li", { children: h }, i, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 222,
+                        columnNumber: 31
+                      }, this)) }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 220,
+                        columnNumber: 27
+                      }, this)
+                    ]
+                  },
+                  exp.id,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 197,
+                    columnNumber: 23
+                  },
+                  this
+                )) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 195,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 186,
+                columnNumber: 17
+              }, this),
+              education && education.length > 0 && /* @__PURE__ */ jsxDEV("section", { children: [
+                /* @__PURE__ */ jsxDEV(
+                  "h2",
+                  {
+                    className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-2 sm:mb-2.5 border-b flex items-center gap-1.5",
+                    style: { color: primary, borderColor: `${primary}30` },
+                    children: [
+                      /* @__PURE__ */ jsxDEV(GraduationCap, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 239,
+                        columnNumber: 21
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("span", { children: t.education.sectionTitle }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 240,
+                        columnNumber: 21
+                      }, this)
+                    ]
+                  },
+                  void 0,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 235,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("div", { className: "space-y-4 sm:space-y-5", children: education.map((edu) => /* @__PURE__ */ jsxDEV(
+                  "div",
+                  {
+                    className: `relative ${isRTL ? "pr-2.5 sm:pr-3 border-e-2" : "pl-2.5 sm:pl-3 border-s-2"}`,
+                    style: { borderColor: `${primary}40` },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("div", { className: "flex flex-nowrap justify-between items-baseline gap-1 mb-0.5", children: [
+                        /* @__PURE__ */ jsxDEV("h3", { className: "text-xs sm:text-[13px] font-bold text-slate-900 break-words", children: edu.degree }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 253,
+                          columnNumber: 27
+                        }, this),
+                        /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] font-medium text-slate-500 shrink-0", children: [
+                          edu.startDate,
+                          "  ",
+                          edu.endDate
+                        ] }, void 0, true, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 254,
+                          columnNumber: 27
+                        }, this)
+                      ] }, void 0, true, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 252,
+                        columnNumber: 25
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("div", { className: "text-[12px] font-medium text-slate-700 flex flex-wrap items-center gap-x-1.5", children: [
+                        /* @__PURE__ */ jsxDEV("span", { style: { color: primary }, className: "break-words", children: edu.institution }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 259,
+                          columnNumber: 27
+                        }, this),
+                        edu.location && /* @__PURE__ */ jsxDEV("span", { className: "text-slate-400 break-words", children: [
+                          ", ",
+                          edu.location
+                        ] }, void 0, true, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 260,
+                          columnNumber: 44
+                        }, this)
+                      ] }, void 0, true, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 258,
+                        columnNumber: 25
+                      }, this),
+                      edu.fieldOfStudy && /* @__PURE__ */ jsxDEV("p", { className: "text-[12px] text-slate-500 italic mt-0.5 break-words", children: edu.fieldOfStudy }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 263,
+                        columnNumber: 27
+                      }, this),
+                      edu.gpa && /* @__PURE__ */ jsxDEV("p", { className: "text-[12px] font-medium text-slate-600 mt-0.5", children: [
+                        t.education.gpa,
+                        ": ",
+                        edu.gpa
+                      ] }, void 0, true, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 266,
+                        columnNumber: 27
+                      }, this)
+                    ]
+                  },
+                  edu.id,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 245,
+                    columnNumber: 23
+                  },
+                  this
+                )) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 243,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 234,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 183,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "w-[32%] shrink-0 min-w-0 space-y-5 sm:space-y-7", children: [
+              skills && skills.length > 0 && /* @__PURE__ */ jsxDEV("section", { children: [
+                /* @__PURE__ */ jsxDEV(
+                  "h2",
+                  {
+                    className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-1.5 sm:mb-2 border-b flex items-center gap-1.5",
+                    style: { color: primary, borderColor: `${primary}30` },
+                    children: [
+                      /* @__PURE__ */ jsxDEV(Code2, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 286,
+                        columnNumber: 21
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("span", { children: t.skills.sectionTitle }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 287,
+                        columnNumber: 21
+                      }, this)
+                    ]
+                  },
+                  void 0,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 282,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap gap-1 sm:gap-1.5", children: skills.map((skill) => /* @__PURE__ */ jsxDEV(
+                  "div",
+                  {
+                    className: "inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[12px] font-medium border break-words max-w-full",
+                    style: {
+                      backgroundColor: `${primary}08`,
+                      borderColor: `${primary}25`,
+                      color: primary
+                    },
+                    children: [
+                      /* @__PURE__ */ jsxDEV("span", { className: "break-words", children: skill.name }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 301,
+                        columnNumber: 25
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("span", { className: "text-[8px] sm:text-[9px] text-slate-400 shrink-0", children: [
+                        "(",
+                        t.levels[skill.level] || skill.level,
+                        ")"
+                      ] }, void 0, true, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 302,
+                        columnNumber: 25
+                      }, this)
+                    ]
+                  },
+                  skill.id,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 292,
+                    columnNumber: 23
+                  },
+                  this
+                )) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 290,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 281,
+                columnNumber: 17
+              }, this),
+              languages && languages.length > 0 && /* @__PURE__ */ jsxDEV("section", { children: [
+                /* @__PURE__ */ jsxDEV(
+                  "h2",
+                  {
+                    className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-1.5 sm:mb-2 border-b flex items-center gap-1.5",
+                    style: { color: primary, borderColor: `${primary}30` },
+                    children: [
+                      /* @__PURE__ */ jsxDEV(Languages, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 318,
+                        columnNumber: 21
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("span", { children: t.languages.sectionTitle }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 319,
+                        columnNumber: 21
+                      }, this)
+                    ]
+                  },
+                  void 0,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 314,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("div", { className: "space-y-1 sm:space-y-1.5", children: languages.map((item) => /* @__PURE__ */ jsxDEV("div", { className: "flex justify-between items-start text-[11px] gap-2 sm:text-xs gap-1", children: [
+                  /* @__PURE__ */ jsxDEV("span", { className: "font-medium text-slate-800 break-words", children: item.name }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 325,
+                    columnNumber: 25
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] text-slate-500 font-medium shrink-0", children: t.proficiencies[item.proficiency] || item.proficiency }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 326,
+                    columnNumber: 25
+                  }, this)
+                ] }, item.id, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 324,
+                  columnNumber: 23
+                }, this)) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 322,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 313,
+                columnNumber: 17
+              }, this),
+              hobbies && hobbies.length > 0 && /* @__PURE__ */ jsxDEV("section", { children: [
+                /* @__PURE__ */ jsxDEV(
+                  "h2",
+                  {
+                    className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-1.5 sm:mb-2 border-b flex items-center gap-1.5",
+                    style: { color: primary, borderColor: `${primary}30` },
+                    children: [
+                      /* @__PURE__ */ jsxDEV(Heart, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 342,
+                        columnNumber: 21
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("span", { children: t.hobbies.sectionTitle }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 343,
+                        columnNumber: 21
+                      }, this)
+                    ]
+                  },
+                  void 0,
+                  true,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 338,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap gap-1", children: hobbies.map((hobby, index) => /* @__PURE__ */ jsxDEV(
+                  "span",
+                  {
+                    className: "text-[12px] px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 break-words",
+                    children: hobby
+                  },
+                  index,
+                  false,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 348,
+                    columnNumber: 23
+                  },
+                  this
+                )) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 346,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 337,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 278,
+              columnNumber: 13
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 181,
+            columnNumber: 11
+          }, this)
+        ]
+      },
+      void 0,
+      true,
+      {
+        fileName: "/app/applet/src/components/CVDocument.tsx",
+        lineNumber: 89,
+        columnNumber: 9
+      },
+      this
+    ) }, void 0, false, {
+      fileName: "/app/applet/src/components/CVDocument.tsx",
+      lineNumber: 88,
+      columnNumber: 7
+    }, this);
+  }
+  if (templateId === "executive") {
+    return /* @__PURE__ */ jsxDEV("div", { className: "w-full flex justify-center", children: /* @__PURE__ */ jsxDEV(
+      "div",
+      {
+        id,
+        dir: isRTL ? "rtl" : "ltr",
+        className: containerClasses,
+        style: { fontFamily: getFontFamily() },
+        children: [
+          /* @__PURE__ */ jsxDEV("header", { className: "text-center pb-2.5 sm:pb-3.5 mb-4 sm:mb-6 border-b-2 border-double", style: { borderColor: primary }, children: [
+            /* @__PURE__ */ jsxDEV("h1", { className: "text-xl sm:text-2xl md:text-3xl font-bold tracking-wider uppercase text-slate-900 leading-tight break-words", children: personal.fullName || (isRTL ? " " : "Candidate Name") }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 379,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV(
+              "p",
+              {
+                className: "text-xs sm:text-sm font-semibold tracking-widest uppercase mt-0.5 break-words",
+                style: { color: primary },
+                children: personal.jobTitle || (isRTL ? " " : "Job Title")
+              },
+              void 0,
+              false,
+              {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 382,
+                columnNumber: 13
+              },
+              this
+            ),
+            /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 mt-2 text-[12px] text-slate-600", children: [
+              personal.email && /* @__PURE__ */ jsxDEV("span", { dir: "ltr", className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.email)}`, children: personal.email }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 391,
+                columnNumber: 34
+              }, this),
+              personal.phone && /* @__PURE__ */ jsxDEV(Fragment, { children: [
+                /* @__PURE__ */ jsxDEV("span", { className: "text-slate-300", children: "" }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 394,
+                  columnNumber: 19
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { dir: "ltr", children: personal.phone }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 395,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 393,
+                columnNumber: 17
+              }, this),
+              personal.location && /* @__PURE__ */ jsxDEV(Fragment, { children: [
+                /* @__PURE__ */ jsxDEV("span", { className: "text-slate-300", children: "" }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 400,
+                  columnNumber: 19
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { children: personal.location }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 401,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 399,
+                columnNumber: 17
+              }, this),
+              personal.linkedin && /* @__PURE__ */ jsxDEV(Fragment, { children: [
+                /* @__PURE__ */ jsxDEV("span", { className: "text-slate-300", children: "" }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 406,
+                  columnNumber: 19
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { dir: "ltr", className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ""))}`, children: personal.linkedin.replace(/^https?:\/\//, "") }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 407,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 405,
+                columnNumber: 17
+              }, this),
+              personal.website && /* @__PURE__ */ jsxDEV(Fragment, { children: [
+                /* @__PURE__ */ jsxDEV("span", { className: "text-slate-300", children: "" }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 412,
+                  columnNumber: 19
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { dir: "ltr", className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ""))}`, children: personal.website.replace(/^https?:\/\//, "") }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 413,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 411,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 390,
+              columnNumber: 13
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 378,
+            columnNumber: 11
+          }, this),
+          summary && /* @__PURE__ */ jsxDEV("section", { className: "mb-4 sm:mb-6", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-2 mb-1 pb-0.5 border-b border-slate-300", children: /* @__PURE__ */ jsxDEV("h2", { className: "text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900", children: t.summary.sectionTitle }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 423,
+              columnNumber: 17
+            }, this) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 422,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "text-xs sm:text-[13px] leading-[1.7] text-slate-700 text-justify break-words", children: renderText(summary) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 427,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 421,
+            columnNumber: 13
+          }, this),
+          experiences && experiences.length > 0 && /* @__PURE__ */ jsxDEV("section", { className: "mb-4 sm:mb-6", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-2 mb-1.5 pb-0.5 border-b border-slate-300", children: /* @__PURE__ */ jsxDEV("h2", { className: "text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900", children: t.experience.sectionTitle }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 437,
+              columnNumber: 17
+            }, this) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 436,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "space-y-4 sm:space-y-6", children: experiences.map((exp) => /* @__PURE__ */ jsxDEV("div", { className: "space-y-0.5", children: [
+              /* @__PURE__ */ jsxDEV("div", { className: "flex flex-nowrap justify-between items-baseline gap-1", children: [
+                /* @__PURE__ */ jsxDEV("h3", { className: "text-xs sm:text-[13px] font-bold text-slate-900 break-words", children: exp.position }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 446,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] font-semibold text-slate-600 shrink-0", children: [
+                  exp.startDate,
+                  "  ",
+                  exp.current ? t.present : exp.endDate
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 447,
+                  columnNumber: 23
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 445,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV("div", { className: "text-[12px] font-semibold text-slate-700 flex flex-wrap items-center justify-between gap-1", children: [
+                /* @__PURE__ */ jsxDEV("span", { style: { color: primary }, className: "break-words", children: exp.company }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 453,
+                  columnNumber: 23
+                }, this),
+                exp.location && /* @__PURE__ */ jsxDEV("span", { className: "text-slate-500 font-normal text-[12px]", children: exp.location }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 454,
+                  columnNumber: 40
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 452,
+                columnNumber: 21
+              }, this),
+              exp.description && /* @__PURE__ */ jsxDEV("p", { className: "text-[12px] text-slate-600 leading-[1.7] text-justify break-words", children: renderText(exp.description) }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 458,
+                columnNumber: 23
+              }, this),
+              exp.highlights && exp.highlights.length > 0 && /* @__PURE__ */ jsxDEV("ul", { className: `list-disc list-outside ${isRTL ? "mr-4" : "ml-4"} space-y-0.5 text-[12px] text-slate-600 leading-snug pt-0.5 break-words`, children: exp.highlights.filter(Boolean).map((h, i) => /* @__PURE__ */ jsxDEV("li", { children: h }, i, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 466,
+                columnNumber: 27
+              }, this)) }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 464,
+                columnNumber: 23
+              }, this)
+            ] }, exp.id, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 444,
+              columnNumber: 19
+            }, this)) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 442,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 435,
+            columnNumber: 13
+          }, this),
+          education && education.length > 0 && /* @__PURE__ */ jsxDEV("section", { className: "mb-4 sm:mb-6", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-2 mb-1.5 pb-0.5 border-b border-slate-300", children: /* @__PURE__ */ jsxDEV("h2", { className: "text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900", children: t.education.sectionTitle }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 480,
+              columnNumber: 17
+            }, this) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 479,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "space-y-4 sm:space-y-5", children: education.map((edu) => /* @__PURE__ */ jsxDEV("div", { className: "flex flex-nowrap justify-between items-baseline gap-1", children: [
+              /* @__PURE__ */ jsxDEV("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsxDEV("h3", { className: "text-xs sm:text-[13px] font-bold text-slate-900 break-words", children: edu.degree }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 489,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("div", { className: "text-[12px] text-slate-700 flex flex-wrap items-center gap-1", children: [
+                  /* @__PURE__ */ jsxDEV("span", { className: "font-semibold break-words", style: { color: primary }, children: edu.institution }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 491,
+                    columnNumber: 25
+                  }, this),
+                  edu.location && /* @__PURE__ */ jsxDEV("span", { className: "text-slate-500", children: [
+                    ", ",
+                    edu.location
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 492,
+                    columnNumber: 42
+                  }, this),
+                  edu.fieldOfStudy && /* @__PURE__ */ jsxDEV("span", { className: "text-slate-500 italic", children: [
+                    "  ",
+                    edu.fieldOfStudy
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 493,
+                    columnNumber: 46
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 490,
+                  columnNumber: 23
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 488,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV("div", { className: "text-end shrink-0", children: [
+                /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] font-semibold text-slate-600", children: [
+                  edu.startDate,
+                  "  ",
+                  edu.endDate
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 497,
+                  columnNumber: 23
+                }, this),
+                edu.gpa && /* @__PURE__ */ jsxDEV("div", { className: "text-[8px] sm:text-[9px] text-slate-500 font-medium", children: [
+                  t.education.gpa,
+                  ": ",
+                  edu.gpa
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 501,
+                  columnNumber: 25
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 496,
+                columnNumber: 21
+              }, this)
+            ] }, edu.id, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 487,
+              columnNumber: 19
+            }, this)) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 485,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 478,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap gap-5 pt-1 border-t border-slate-200", style: { flexDirection: "row" }, children: [
+            skills && skills.length > 0 && /* @__PURE__ */ jsxDEV("div", { className: "min-w-0 w-[47%] shrink-0", children: [
+              /* @__PURE__ */ jsxDEV("h2", { className: "text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900 mb-1.5 pb-0.5 border-b border-slate-200", children: t.skills.sectionTitle }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 517,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap gap-x-2 gap-y-1 text-[12px]", children: skills.map((skill) => /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1.5 text-slate-700 min-w-0", children: [
+                /* @__PURE__ */ jsxDEV("span", { className: "w-1.5 h-1.5 rounded-full shrink-0", style: { backgroundColor: primary } }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 523,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { className: "break-words", children: skill.name }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 524,
+                  columnNumber: 23
+                }, this)
+              ] }, skill.id, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 522,
+                columnNumber: 21
+              }, this)) }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 520,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 516,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "min-w-0 w-[47%] shrink-0", children: [
+              languages && languages.length > 0 && /* @__PURE__ */ jsxDEV("div", { className: "mb-2 sm:mb-2.5", children: [
+                /* @__PURE__ */ jsxDEV("h2", { className: "text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900 mb-1 pb-0.5 border-b border-slate-200", children: t.languages.sectionTitle }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 535,
+                  columnNumber: 19
+                }, this),
+                /* @__PURE__ */ jsxDEV("div", { className: "space-y-1 text-[12px]", children: languages.map((item) => /* @__PURE__ */ jsxDEV("div", { className: "flex justify-between items-start gap-2", children: [
+                  /* @__PURE__ */ jsxDEV("span", { className: "font-medium text-slate-800 break-words", children: item.name }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 541,
+                    columnNumber: 25
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] text-slate-500 shrink-0", children: t.proficiencies[item.proficiency] || item.proficiency }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 542,
+                    columnNumber: 25
+                  }, this)
+                ] }, item.id, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 540,
+                  columnNumber: 23
+                }, this)) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 538,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 534,
+                columnNumber: 17
+              }, this),
+              hobbies && hobbies.length > 0 && /* @__PURE__ */ jsxDEV("div", { children: [
+                /* @__PURE__ */ jsxDEV("h2", { className: "text-xs sm:text-[13px] font-bold uppercase tracking-widest text-slate-900 mb-1 pb-0.5 border-b border-slate-200", children: t.hobbies.sectionTitle }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 553,
+                  columnNumber: 19
+                }, this),
+                /* @__PURE__ */ jsxDEV("p", { className: "text-[12px] text-slate-600 break-words", children: hobbies.join("  ") }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 556,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 552,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 532,
+              columnNumber: 13
+            }, this)
+          ] }, void 0, true, {
+            fileName: "/app/applet/src/components/CVDocument.tsx",
+            lineNumber: 513,
+            columnNumber: 11
+          }, this)
+        ]
+      },
+      void 0,
+      true,
+      {
+        fileName: "/app/applet/src/components/CVDocument.tsx",
+        lineNumber: 371,
+        columnNumber: 9
+      },
+      this
+    ) }, void 0, false, {
+      fileName: "/app/applet/src/components/CVDocument.tsx",
+      lineNumber: 370,
+      columnNumber: 7
+    }, this);
+  }
+  if (templateId === "creative") {
+    return /* @__PURE__ */ jsxDEV("div", { className: "w-full flex justify-center", children: /* @__PURE__ */ jsxDEV(
+      "div",
+      {
+        id,
+        dir: isRTL ? "rtl" : "ltr",
+        className: `w-[794px] min-w-[794px] max-w-[794px] min-h-[297mm] h-auto bg-white text-slate-800 flex transition-all items-stretch ${isRTL ? "font-arabic flex-row-reverse" : "flex-row"} ${isPrint ? "shadow-none border-0" : "shadow-xl rounded-sm border border-slate-200/90 select-none"}`,
+        style: { fontFamily: getFontFamily() },
+        children: [
+          /* @__PURE__ */ jsxDEV(
+            "aside",
+            {
+              className: "w-[34%] min-w-0 p-4 sm:p-5 flex flex-col justify-start space-y-4 sm:space-y-4 shrink-0",
+              style: {
+                backgroundColor: `${primary}10`,
+                borderRight: isRTL ? "none" : `2px solid ${primary}25`,
+                borderLeft: isRTL ? `2px solid ${primary}25` : "none"
+              },
+              children: [
+                /* @__PURE__ */ jsxDEV("div", { className: "text-center space-y-1.5 sm:space-y-2", children: [
+                  personal.avatarUrl ? /* @__PURE__ */ jsxDEV(
+                    "img",
+                    {
+                      src: personal.avatarUrl,
+                      alt: personal.fullName,
+                      referrerPolicy: "no-referrer",
+                      className: "w-14 h-14 sm:w-20 sm:h-20 rounded-full mx-auto object-cover border-2 sm:border-3 shadow-md",
+                      style: { borderColor: primary }
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 594,
+                      columnNumber: 17
+                    },
+                    this
+                  ) : /* @__PURE__ */ jsxDEV(
+                    "div",
+                    {
+                      className: "w-12 h-12 sm:w-16 sm:h-16 rounded-full mx-auto flex items-center justify-center text-white text-base sm:text-xl font-bold shadow-md",
+                      style: { backgroundColor: primary },
+                      children: (personal.fullName || "A").charAt(0)
+                    },
+                    void 0,
+                    false,
+                    {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 602,
+                      columnNumber: 17
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV("div", { children: [
+                    /* @__PURE__ */ jsxDEV("h3", { className: "text-xs sm:text-sm font-bold text-slate-900 break-words", children: personal.fullName }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 611,
+                      columnNumber: 17
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("p", { className: "text-xs sm:text-[13px] font-semibold break-words", style: { color: primary }, children: personal.jobTitle }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 612,
+                      columnNumber: 17
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 610,
+                    columnNumber: 15
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 592,
+                  columnNumber: 13
+                }, this),
+                /* @__PURE__ */ jsxDEV("div", { className: "space-y-1.5 sm:space-y-2 text-xs sm:text-[13px] text-slate-700 pt-1.5 sm:pt-2 border-t border-slate-200", children: [
+                  personal.email && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1.5 sm:gap-2 min-w-0", children: [
+                    /* @__PURE__ */ jsxDEV("div", { className: "p-0.5 sm:p-1 rounded-md text-white shrink-0", style: { backgroundColor: primary }, children: /* @__PURE__ */ jsxDEV(Mail, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 621,
+                      columnNumber: 21
+                    }, this) }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 620,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.email)}`, dir: "ltr", children: personal.email }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 623,
+                      columnNumber: 19
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 619,
+                    columnNumber: 17
+                  }, this),
+                  personal.phone && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1.5 sm:gap-2 min-w-0", children: [
+                    /* @__PURE__ */ jsxDEV("div", { className: "p-0.5 sm:p-1 rounded-md text-white shrink-0", style: { backgroundColor: primary }, children: /* @__PURE__ */ jsxDEV(Phone, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 629,
+                      columnNumber: 21
+                    }, this) }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 628,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.phone)}`, dir: "ltr", children: personal.phone }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 631,
+                      columnNumber: 19
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 627,
+                    columnNumber: 17
+                  }, this),
+                  personal.location && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1.5 sm:gap-2 min-w-0", children: [
+                    /* @__PURE__ */ jsxDEV("div", { className: "p-0.5 sm:p-1 rounded-md text-white shrink-0", style: { backgroundColor: primary }, children: /* @__PURE__ */ jsxDEV(MapPin, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 637,
+                      columnNumber: 21
+                    }, this) }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 636,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.location)}`, children: personal.location }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 639,
+                      columnNumber: 19
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 635,
+                    columnNumber: 17
+                  }, this),
+                  personal.website && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1.5 sm:gap-2 min-w-0", children: [
+                    /* @__PURE__ */ jsxDEV("div", { className: "p-0.5 sm:p-1 rounded-md text-white shrink-0", style: { backgroundColor: primary }, children: /* @__PURE__ */ jsxDEV(Globe, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 645,
+                      columnNumber: 21
+                    }, this) }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 644,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.website.replace(/^https?:\/\//, ""))}`, dir: "ltr", children: personal.website.replace(/^https?:\/\//, "") }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 647,
+                      columnNumber: 19
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 643,
+                    columnNumber: 17
+                  }, this),
+                  personal.linkedin && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1.5 sm:gap-2 min-w-0", children: [
+                    /* @__PURE__ */ jsxDEV("div", { className: "p-0.5 sm:p-1 rounded-md text-white shrink-0", style: { backgroundColor: primary }, children: /* @__PURE__ */ jsxDEV(Linkedin, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 653,
+                      columnNumber: 21
+                    }, this) }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 652,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.linkedin.replace(/^https?:\/\//, ""))}`, dir: "ltr", children: personal.linkedin.replace(/^https?:\/\//, "") }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 655,
+                      columnNumber: 19
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 651,
+                    columnNumber: 17
+                  }, this),
+                  personal.github && /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-1.5 sm:gap-2 min-w-0", children: [
+                    /* @__PURE__ */ jsxDEV("div", { className: "p-0.5 sm:p-1 rounded-md text-white shrink-0", style: { backgroundColor: primary }, children: /* @__PURE__ */ jsxDEV(Github, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 661,
+                      columnNumber: 21
+                    }, this) }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 660,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { className: `break-words [word-break:break-word] ${getDynamicTextSize(personal.github.replace(/^https?:\/\//, ""))}`, dir: "ltr", children: personal.github.replace(/^https?:\/\//, "") }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 663,
+                      columnNumber: 19
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 659,
+                    columnNumber: 17
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 617,
+                  columnNumber: 13
+                }, this),
+                skills && skills.length > 0 && /* @__PURE__ */ jsxDEV("div", { className: "space-y-1.5 sm:space-y-2 pt-1.5 sm:pt-2 border-t border-slate-200", children: [
+                  /* @__PURE__ */ jsxDEV(
+                    "h4",
+                    {
+                      className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider flex items-center gap-1",
+                      style: { color: primary },
+                      children: [
+                        /* @__PURE__ */ jsxDEV(Code2, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 675,
+                          columnNumber: 19
+                        }, this),
+                        /* @__PURE__ */ jsxDEV("span", { children: t.skills.sectionTitle }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 676,
+                          columnNumber: 19
+                        }, this)
+                      ]
+                    },
+                    void 0,
+                    true,
+                    {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 671,
+                      columnNumber: 17
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV("div", { className: "space-y-1 sm:space-y-1.5", children: skills.map((skill) => /* @__PURE__ */ jsxDEV("div", { className: "space-y-0.5", children: [
+                    /* @__PURE__ */ jsxDEV("div", { className: "flex justify-between items-start text-[11px] gap-2 sm:text-xs font-semibold text-slate-800", children: [
+                      /* @__PURE__ */ jsxDEV("span", { className: "break-words", children: skill.name }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 683,
+                        columnNumber: 25
+                      }, this),
+                      /* @__PURE__ */ jsxDEV("span", { className: "text-slate-500 shrink-0 ml-1", children: t.levels[skill.level] || skill.level }, void 0, false, {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 684,
+                        columnNumber: 25
+                      }, this)
+                    ] }, void 0, true, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 682,
+                      columnNumber: 23
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("div", { className: "w-full h-1 sm:h-1.5 bg-slate-200 rounded-full overflow-hidden", children: /* @__PURE__ */ jsxDEV(
+                      "div",
+                      {
+                        className: "h-full rounded-full transition-all",
+                        style: {
+                          width: getSkillPercent(skill.level),
+                          backgroundColor: primary
+                        }
+                      },
+                      void 0,
+                      false,
+                      {
+                        fileName: "/app/applet/src/components/CVDocument.tsx",
+                        lineNumber: 687,
+                        columnNumber: 25
+                      },
+                      this
+                    ) }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 686,
+                      columnNumber: 23
+                    }, this)
+                  ] }, skill.id, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 681,
+                    columnNumber: 21
+                  }, this)) }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 679,
+                    columnNumber: 17
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 670,
+                  columnNumber: 15
+                }, this),
+                languages && languages.length > 0 && /* @__PURE__ */ jsxDEV("div", { className: "space-y-1 sm:space-y-1.5 pt-1.5 sm:pt-2 border-t border-slate-200", children: [
+                  /* @__PURE__ */ jsxDEV(
+                    "h4",
+                    {
+                      className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider flex items-center gap-1",
+                      style: { color: primary },
+                      children: [
+                        /* @__PURE__ */ jsxDEV(Languages, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 708,
+                          columnNumber: 19
+                        }, this),
+                        /* @__PURE__ */ jsxDEV("span", { children: t.languages.sectionTitle }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 709,
+                          columnNumber: 19
+                        }, this)
+                      ]
+                    },
+                    void 0,
+                    true,
+                    {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 704,
+                      columnNumber: 17
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV("div", { className: "space-y-0.5 sm:space-y-1", children: languages.map((item) => /* @__PURE__ */ jsxDEV("div", { className: "flex justify-between items-start text-[11px] gap-2 sm:text-xs gap-1", children: [
+                    /* @__PURE__ */ jsxDEV("span", { className: "font-semibold text-slate-800 break-words", children: item.name }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 715,
+                      columnNumber: 23
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { className: "text-slate-500 shrink-0", children: t.proficiencies[item.proficiency] || item.proficiency }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 716,
+                      columnNumber: 23
+                    }, this)
+                  ] }, item.id, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 714,
+                    columnNumber: 21
+                  }, this)) }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 712,
+                    columnNumber: 17
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 703,
+                  columnNumber: 15
+                }, this),
+                hobbies && hobbies.length > 0 && /* @__PURE__ */ jsxDEV("div", { className: "pt-1.5 sm:pt-2 border-t border-slate-200", children: [
+                  /* @__PURE__ */ jsxDEV(
+                    "h4",
+                    {
+                      className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1",
+                      style: { color: primary },
+                      children: [
+                        /* @__PURE__ */ jsxDEV(Heart, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 730,
+                          columnNumber: 19
+                        }, this),
+                        /* @__PURE__ */ jsxDEV("span", { children: t.hobbies.sectionTitle }, void 0, false, {
+                          fileName: "/app/applet/src/components/CVDocument.tsx",
+                          lineNumber: 731,
+                          columnNumber: 19
+                        }, this)
+                      ]
+                    },
+                    void 0,
+                    true,
+                    {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 726,
+                      columnNumber: 17
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap gap-1", children: hobbies.map((hobby, idx) => /* @__PURE__ */ jsxDEV(
+                    "span",
+                    {
+                      className: "text-[8px] sm:text-[9px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200 break-words",
+                      children: hobby
+                    },
+                    idx,
+                    false,
+                    {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 735,
+                      columnNumber: 21
+                    },
+                    this
+                  )) }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 733,
+                    columnNumber: 17
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 725,
+                  columnNumber: 15
+                }, this)
+              ]
+            },
+            void 0,
+            true,
+            {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 583,
+              columnNumber: 11
+            },
+            this
+          ),
+          /* @__PURE__ */ jsxDEV("main", { className: "w-[66%] flex-1 min-w-0 p-4 sm:p-6 space-y-4 sm:space-y-6", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "border-b-2 pb-2 sm:pb-3 mb-1.5 sm:mb-2", style: { borderColor: `${primary}25` }, children: [
+              /* @__PURE__ */ jsxDEV(
+                "h1",
+                {
+                  className: "text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight break-words leading-tight",
+                  style: { color: primary },
+                  children: personal.fullName || (isRTL ? " " : "Candidate Name")
+                },
+                void 0,
+                false,
+                {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 751,
+                  columnNumber: 15
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("div", { className: "inline-block mt-1 sm:mt-1.5 px-2.5 sm:px-3 py-0.5 rounded-lg text-xs sm:text-[13px] font-bold text-white shadow-xs", style: { backgroundColor: primary }, children: personal.jobTitle || (isRTL ? " " : "Job Title") }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 757,
+                columnNumber: 15
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 750,
+              columnNumber: 13
+            }, this),
+            summary && /* @__PURE__ */ jsxDEV("section", { className: "relative pl-2.5 sm:pl-3 border-s-2 sm:border-s-2", style: { borderColor: primary }, children: /* @__PURE__ */ jsxDEV("p", { className: "text-xs sm:text-[13px] leading-[1.7] text-slate-700 text-justify break-words", children: renderText(summary) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 765,
+              columnNumber: 17
+            }, this) }, void 0, false, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 764,
+              columnNumber: 15
+            }, this),
+            experiences && experiences.length > 0 && /* @__PURE__ */ jsxDEV("section", { className: "space-y-4 sm:space-y-6", children: [
+              /* @__PURE__ */ jsxDEV(
+                "h2",
+                {
+                  className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-1.5 sm:mb-2 border-b flex items-center gap-1.5",
+                  style: { color: primary, borderColor: `${primary}30` },
+                  children: [
+                    /* @__PURE__ */ jsxDEV(Briefcase, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 778,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { children: t.experience.sectionTitle }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 779,
+                      columnNumber: 19
+                    }, this)
+                  ]
+                },
+                void 0,
+                true,
+                {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 774,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("div", { className: "space-y-4 sm:space-y-6", children: experiences.map((exp) => /* @__PURE__ */ jsxDEV("div", { className: "relative pl-3 sm:pl-3.5 border-s-2", style: { borderColor: `${primary}40` }, children: [
+                /* @__PURE__ */ jsxDEV(
+                  "span",
+                  {
+                    className: "absolute -start-[5px] top-1 w-2 h-2 rounded-full border border-white",
+                    style: { backgroundColor: primary }
+                  },
+                  void 0,
+                  false,
+                  {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 785,
+                    columnNumber: 23
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV("div", { className: "flex flex-nowrap justify-between items-baseline gap-1", children: [
+                  /* @__PURE__ */ jsxDEV("h3", { className: "text-xs sm:text-[13px] font-bold text-slate-900 break-words", children: exp.position }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 790,
+                    columnNumber: 25
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] font-bold text-white px-1.5 sm:px-2 py-0.5 rounded-full shrink-0", style: { backgroundColor: primary }, children: [
+                    exp.startDate,
+                    "  ",
+                    exp.current ? t.present : exp.endDate
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 791,
+                    columnNumber: 25
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 789,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("div", { className: "text-[12px] font-semibold text-slate-700 my-0.5 flex flex-wrap items-center gap-1", children: [
+                  /* @__PURE__ */ jsxDEV("span", { style: { color: primary }, className: "break-words", children: exp.company }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 797,
+                    columnNumber: 25
+                  }, this),
+                  exp.location && /* @__PURE__ */ jsxDEV("span", { className: "text-slate-400 font-normal", children: [
+                    "  ",
+                    exp.location
+                  ] }, void 0, true, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 798,
+                    columnNumber: 42
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 796,
+                  columnNumber: 23
+                }, this),
+                exp.description && /* @__PURE__ */ jsxDEV("p", { className: "text-[12px] text-slate-600 mb-1 leading-[1.7] break-words", children: renderText(exp.description) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 802,
+                  columnNumber: 25
+                }, this),
+                exp.highlights && exp.highlights.length > 0 && /* @__PURE__ */ jsxDEV("ul", { className: "list-disc list-outside ml-3.5 space-y-0.5 text-[12px] text-slate-600 leading-snug break-words", children: exp.highlights.filter(Boolean).map((h, i) => /* @__PURE__ */ jsxDEV("li", { children: h }, i, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 810,
+                  columnNumber: 29
+                }, this)) }, void 0, false, {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 808,
+                  columnNumber: 25
+                }, this)
+              ] }, exp.id, true, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 784,
+                columnNumber: 21
+              }, this)) }, void 0, false, {
+                fileName: "/app/applet/src/components/CVDocument.tsx",
+                lineNumber: 782,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, true, {
+              fileName: "/app/applet/src/components/CVDocument.tsx",
+              lineNumber: 773,
+              columnNumber: 15
+            }, this),
+            education && education.length > 0 && /* @__PURE__ */ jsxDEV("section", { className: "space-y-4 sm:space-y-5", children: [
+              /* @__PURE__ */ jsxDEV(
+                "h2",
+                {
+                  className: "text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-1.5 sm:mb-2 border-b flex items-center gap-1.5",
+                  style: { color: primary, borderColor: `${primary}30` },
+                  children: [
+                    /* @__PURE__ */ jsxDEV(GraduationCap, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 827,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("span", { children: t.education.sectionTitle }, void 0, false, {
+                      fileName: "/app/applet/src/components/CVDocument.tsx",
+                      lineNumber: 828,
+                      columnNumber: 19
+                    }, this)
+                  ]
+                },
+                void 0,
+                true,
+                {
+                  fileName: "/app/applet/src/components/CVDocument.tsx",
+                  lineNumber: 823,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV("div", { className: "space-y-1.5 sm:space-y-2", children: education.map((edu) => /* @__PURE__ */ jsxDEV("div", { className: "p-1.5 sm:p-2 rounded-xl bg-slate-50/80 border border-slate-200/80", children: [
+                /* @__PURE__ */ jsxDEV("div", { className: "flex flex-nowrap justify-between items-baseline gap-1", children: [
+                  /* @__PURE__ */ jsxDEV("h3", { className: "text-xs sm:text-[13px] font-bold text-slate-900 break-words", children: edu.degree }, void 0, false, {
+                    fileName: "/app/applet/src/components/CVDocument.tsx",
+                    lineNumber: 835,
+                    columnNumber: 25
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("span", { className: "text-[12px] text-slate-500 font-medium shrink-0", children: [
+                    edu.startDate,
+                    "  ",
+                    edu.endDat

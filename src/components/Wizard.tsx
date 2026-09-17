@@ -1,12 +1,15 @@
 import React from 'react';
 import { CVData, WizardTabKey } from '../types';
 import { WizardTabs } from './WizardTabs';
+import { CVStrengthMeter } from './CVStrengthMeter';
 import { PersonalSection } from './sections/PersonalSection';
 import { SummarySection } from './sections/SummarySection';
 import { ExperienceSection } from './sections/ExperienceSection';
 import { EducationSection } from './sections/EducationSection';
 import { SkillsSection } from './sections/SkillsSection';
 import { LanguagesSection } from './sections/LanguagesSection';
+import { ProjectsSection } from './sections/ProjectsSection';
+import { CertificationsSection } from './sections/CertificationsSection';
 import { HobbiesSection } from './sections/HobbiesSection';
 import { ThemeSection } from './sections/ThemeSection';
 import { ArrowLeft, ArrowRight, Eye } from 'lucide-react';
@@ -28,6 +31,8 @@ const TAB_ORDER: WizardTabKey[] = [
   'education',
   'skills',
   'languages',
+  'projects',
+  'certifications',
   'hobbies',
   'theme',
 ];
@@ -65,6 +70,8 @@ export const Wizard: React.FC<WizardProps> = ({
     education: data.education.length,
     skills: data.skills.length,
     languages: data.languages.length,
+    projects: data.projects?.length || 0,
+    certifications: data.certifications?.length || 0,
     hobbies: data.hobbies.length,
     theme: '',
   };
@@ -84,6 +91,9 @@ export const Wizard: React.FC<WizardProps> = ({
 
       {/* Main Form Content Area */}
       <div className="w-full max-w-full px-3.5 py-4 flex-1">
+        {/* CV Strength Completion Meter */}
+        <CVStrengthMeter data={data} />
+
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -127,6 +137,18 @@ export const Wizard: React.FC<WizardProps> = ({
               <LanguagesSection
                 languages={data.languages}
                 onChange={(languages) => onUpdateCV((prev) => ({ ...prev, languages }))}
+              />
+            )}
+            {activeTab === 'projects' && (
+              <ProjectsSection
+                projects={data.projects || []}
+                onChange={(projects) => onUpdateCV((prev) => ({ ...prev, projects }))}
+              />
+            )}
+            {activeTab === 'certifications' && (
+              <CertificationsSection
+                certifications={data.certifications || []}
+                onChange={(certifications) => onUpdateCV((prev) => ({ ...prev, certifications }))}
               />
             )}
             {activeTab === 'hobbies' && (

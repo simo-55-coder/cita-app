@@ -26,80 +26,607 @@ html, body {
   font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
 }
 
+/* ========================================================================= */
+/* STRICT A4 WYSIWYG PRINT & PDF EXPORT STYLING                             */
+/* ========================================================================= */
 @media print {
-  @page {
-    size: A4;
-    margin: 0;
-  }
-
-  html, body {
-    width: 100vw !important;
-    min-height: 100vh !important;
-    background: #ffffff !important;
-    color: #1e293b !important;
-    padding: 0 !important;
-    margin: 0 !important;
+  /* 1. Global color & background preservation */
+  *,
+  *::before,
+  *::after {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    overflow: visible !important;
+    color-adjust: exact !important;
+    box-sizing: border-box !important;
   }
 
-  /* Completely hide interactive UI elements */
+  /* 2. Strict Physical A4 Dimensions without browser margins */
+  @page {
+    size: 210mm 297mm;
+    margin: 0mm !important;
+  }
+
+  html,
+  body {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* 3. Hide interactive screen UI elements */
   .no-print,
   #root > .no-print,
-  header,
+  body > header,
   nav,
-  aside,
   button,
   #language-switcher,
   [role="dialog"] {
     display: none !important;
   }
 
-  /* Show only the dedicated print container */
-  .print-only,
+  /* 4. Dedicated Print Canvas */
   #print-cv-root {
     display: block !important;
     visibility: visible !important;
-    width: 100vw !important;
-    min-height: 100vh !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #ffffff !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
   }
 
   #print-cv-root * {
     visibility: visible !important;
   }
 
-  #print-cv-root > div {
-    width: 100vw !important;
-    min-height: 100vh !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  #print-cv-root header,
+  #print-cv-root main,
+  #print-cv-root section {
     display: block !important;
   }
 
-  #print-cv-document {
-    width: 100vw !important;
-    min-height: 100vh !important;
-    max-width: none !important;
-    aspect-ratio: auto !important;
+  #print-cv-root .w-full.flex.justify-center {
+    width: 210mm !important;
+    height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
+  }
+
+  /* 5. Resume Container: Fixed Physical A4 Dimensions (210mm x 297mm) */
+  #print-cv-document {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  /* 5a. Standard / Classic templates: Compact & professional layout with natural top-to-bottom flow */
+  #print-cv-document.cv-standard-template {
+    min-height: 297mm !important;
+    height: 297mm !important;
+    padding: 16mm 14mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    overflow: hidden !important;
+  }
+
+  /* Multi-column standard template (e.g. Creative) */
+  #print-cv-document.cv-standard-template.flex-row,
+  #print-cv-document.cv-standard-template.flex-row-reverse {
+    display: flex !important;
+    flex-direction: row !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    padding: 0 !important;
+    align-items: stretch !important;
+  }
+
+  #print-cv-document.cv-standard-template.flex-row-reverse {
+    flex-direction: row-reverse !important;
+  }
+
+  #print-cv-document.cv-standard-template.flex-row > aside,
+  #print-cv-document.cv-standard-template.flex-row-reverse > aside,
+  #print-cv-document.cv-standard-template.flex-row > div:first-child,
+  #print-cv-document.cv-standard-template.flex-row-reverse > div:first-child {
+    height: 100% !important;
+    min-height: 297mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
     box-sizing: border-box !important;
-    page-break-after: auto !important;
-    page-break-inside: auto !important;
+  }
+
+  #print-cv-document.cv-standard-template.flex-row > main,
+  #print-cv-document.cv-standard-template.flex-row-reverse > main,
+  #print-cv-document.cv-standard-template.flex-row > div:last-child,
+  #print-cv-document.cv-standard-template.flex-row-reverse > div:last-child {
+    height: 100% !important;
+    min-height: 297mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 5b. Premium templates: Pure original pristine design preserved without forced vertical stretching */
+  #print-cv-document.cv-premium-template {
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    padding: 0 !important;
+    display: flex !important;
+    overflow: hidden !important;
+  }
+
+  #print-cv-document.cv-premium-template > * {
+    height: 100% !important;
+    min-height: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Grid layout preservation in print */
+  #print-cv-document .md\:grid-cols-12 {
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+  #print-cv-document .md\:col-span-8 {
+    grid-column: span 8 / span 8 !important;
+  }
+  #print-cv-document .md\:col-span-4 {
+    grid-column: span 4 / span 4 !important;
+  }
+
+  /* 7. Comprehensive Text Overflow & Boundary Protection */
+  #print-cv-document,
+  #print-cv-document * {
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  /* 7a. Non-Premium (Standard) Templates: Badge, Tag, Pill, & Inner Container Print Overflow Protection */
+  #print-cv-document.cv-standard-template * {
+    box-sizing: border-box !important;
+  }
+
+  /* Flex and Grid wrappers for skill tags, language badges, and interest boxes */
+  #print-cv-document.cv-standard-template .flex-wrap,
+  #print-cv-document.cv-standard-template .flex.flex-wrap,
+  #print-cv-document.cv-standard-template section .flex-wrap,
+  #print-cv-document.cv-standard-template aside .flex-wrap,
+  #print-cv-document.cv-standard-template main .flex-wrap,
+  #print-cv-document.cv-standard-template div[class*="flex-wrap"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    align-items: center !important;
+    align-content: flex-start !important;
+    gap: 4px 6px !important;
+  }
+
+  /* Force general cards and content containers in standard templates to remain strictly contained without breaking badge pills */
+  #print-cv-document.cv-standard-template p[class*="border"],
+  #print-cv-document.cv-standard-template div.space-y-4,
+  #print-cv-document.cv-standard-template div.space-y-3,
+  #print-cv-document.cv-standard-template section[class*="border"] {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ==========================================================================
+     Definitive Badge, Tag, Chip, Skill & Interest Container Print Fix
+     (Non-Premium Templates Only)
+     ========================================================================== */
+  #print-cv-document.cv-standard-template .interests-section,
+  #print-cv-document.cv-standard-template .hobbies {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #print-cv-document.cv-standard-template .interests-section .flex-wrap,
+  #print-cv-document.cv-standard-template .hobbies .flex-wrap,
+  #print-cv-document.cv-standard-template .interests-section div[class*="flex-wrap"],
+  #print-cv-document.cv-standard-template .hobbies div[class*="flex-wrap"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    align-items: center !important;
+    align-content: flex-start !important;
+    gap: 6px 8px !important;
+  }
+
+  /* 1. Unset Badge Heights, 2. Single-Line Container Fix, 3. No Text Split or Spilling */
+  #print-cv-document.cv-standard-template .skill-badge,
+  #print-cv-document.cv-standard-template .tag,
+  #print-cv-document.cv-standard-template .chip,
+  #print-cv-document.cv-standard-template .interest-item,
+  #print-cv-document.cv-standard-template .hobby-badge,
+  #print-cv-document.cv-standard-template .interest-badge,
+  #print-cv-document.cv-standard-template .interests-section .flex-wrap > *,
+  #print-cv-document.cv-standard-template .hobbies .flex-wrap > *,
+  #print-cv-document.cv-standard-template .interests-section .hobby-badge,
+  #print-cv-document.cv-standard-template .hobbies .hobby-badge,
+  #print-cv-document.cv-standard-template .interests-section .interest-badge,
+  #print-cv-document.cv-standard-template .hobbies .interest-badge,
+  #print-cv-document.cv-standard-template .flex-wrap > .skill-badge,
+  #print-cv-document.cv-standard-template .flex-wrap > .tag,
+  #print-cv-document.cv-standard-template .flex-wrap > .chip,
+  #print-cv-document.cv-standard-template .flex-wrap > .interest-item,
+  #print-cv-document.cv-standard-template .flex-wrap > span.rounded,
+  #print-cv-document.cv-standard-template .flex-wrap > span.rounded-full,
+  #print-cv-document.cv-standard-template .flex-wrap > span.rounded-md,
+  #print-cv-document.cv-standard-template .flex-wrap > div.rounded-md,
+  #print-cv-document.cv-standard-template .flex-wrap > span[class*="rounded"],
+  #print-cv-document.cv-standard-template .flex-wrap > div[class*="rounded"],
+  #print-cv-document:not(.cv-premium-template) .skill-badge,
+  #print-cv-document:not(.cv-premium-template) .tag,
+  #print-cv-document:not(.cv-premium-template) .chip,
+  #print-cv-document:not(.cv-premium-template) .interest-item,
+  #print-cv-document:not(.cv-premium-template) .hobby-badge,
+  #print-cv-document:not(.cv-premium-template) .interest-badge,
+  #print-cv-document:not(.cv-premium-template) .interests-section .flex-wrap > *,
+  #print-cv-document:not(.cv-premium-template) .hobbies .flex-wrap > * {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: auto !important;
+    min-height: 22px !important;
+    max-height: none !important;
+    padding: 3px 8px !important;
+    box-sizing: border-box !important;
+    line-height: 1.25 !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    word-wrap: normal !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    flex: 0 0 auto !important;
+    vertical-align: middle !important;
+  }
+
+  /* Ensure headers inside .interests-section and .hobbies remain styled as section titles */
+  #print-cv-document.cv-standard-template .interests-section h2,
+  #print-cv-document.cv-standard-template .hobbies h2,
+  #print-cv-document.cv-standard-template .interests-section h4,
+  #print-cv-document.cv-standard-template .hobbies h4 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0 0 4px 0 !important;
+    line-height: 1.25 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
     overflow: visible !important;
   }
+
+  #print-cv-document.cv-standard-template .interests-section h2 span,
+  #print-cv-document.cv-standard-template .hobbies h2 span,
+  #print-cv-document.cv-standard-template .interests-section h4 span,
+  #print-cv-document.cv-standard-template .hobbies h4 span {
+    display: inline !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    line-height: inherit !important;
+    border: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+
+  /* Inner elements of badges (spans, labels) stay neatly together on a single line */
+  #print-cv-document.cv-standard-template .skill-badge *,
+  #print-cv-document.cv-standard-template .interest-item *,
+  #print-cv-document.cv-standard-template .hobby-badge *,
+  #print-cv-document.cv-standard-template .interest-badge *,
+  #print-cv-document.cv-standard-template .tag *,
+  #print-cv-document.cv-standard-template .chip *,
+  #print-cv-document.cv-standard-template .flex-wrap > span.rounded-full *,
+  #print-cv-document.cv-standard-template .flex-wrap > span.rounded-md *,
+  #print-cv-document.cv-standard-template .flex-wrap > div.rounded-md *,
+  #print-cv-document:not(.cv-premium-template) .skill-badge *,
+  #print-cv-document:not(.cv-premium-template) .interest-item *,
+  #print-cv-document:not(.cv-premium-template) .hobby-badge *,
+  #print-cv-document:not(.cv-premium-template) .interest-badge *,
+  #print-cv-document:not(.cv-premium-template) .tag *,
+  #print-cv-document:not(.cv-premium-template) .chip * {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    word-wrap: normal !important;
+    max-width: 100% !important;
+    line-height: inherit !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+  }
+
+  /* Flex and Grid items in standard templates must never overflow their containers */
+  #print-cv-document.cv-standard-template .flex,
+  #print-cv-document.cv-standard-template .grid {
+    min-width: 0 !important;
+  }
+
+  #print-cv-document.cv-standard-template .flex > *,
+  #print-cv-document.cv-standard-template .grid > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    box-sizing: border-box !important;
+  }
+
+  #print-cv-document h1,
+  #print-cv-document h2,
+  #print-cv-document h3,
+  #print-cv-document h4,
+  #print-cv-document p,
+  #print-cv-document span,
+  #print-cv-document li,
+  #print-cv-document a {
+    max-width: 100% !important;
+  }
+
+  /* 8. Shapes, Borders, and Radii Preservation */
+  #print-cv-document .rounded-full {
+    border-radius: 9999px !important;
+  }
+  #print-cv-document .rounded-lg {
+    border-radius: 0.5rem !important;
+  }
+  #print-cv-document .rounded-md {
+    border-radius: 0.375rem !important;
+  }
+  #print-cv-document .rounded-xl {
+    border-radius: 0.75rem !important;
+  }
+  #print-cv-document .border {
+    border-width: 1px !important;
+    border-style: solid !important;
+  }
+
+  /* Keep section heading badges, pills, and framed boxes strictly contained without wrapping or overflowing */
+  #print-cv-document h2.inline-block,
+  #print-cv-document h2.rounded-full,
+  #print-cv-document h2[class*="border"],
+  #print-cv-document .border > h2,
+  #print-cv-document h2[class*="border-slate-300"] {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    word-wrap: normal !important;
+    display: inline-block !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Prevent letter-spacing from breaking cursive Arabic script in Print engines */
+  #print-cv-document[dir="rtl"] *,
+  #print-cv-document [dir="rtl"] * {
+    letter-spacing: normal !important;
+  }
+
+  /* Profile avatar in standard templates (Enlarged to fit resume content proportionally) */
+  #print-cv-document.cv-standard-template .cv-profile-avatar,
+  #print-cv-document.cv-standard-template .header-avatar,
+  #print-cv-document.cv-standard-template .sidebar-avatar,
+  #print-cv-document:not(.cv-premium-template) .cv-profile-avatar,
+  #print-cv-document:not(.cv-premium-template) .header-avatar,
+  #print-cv-document:not(.cv-premium-template) .sidebar-avatar {
+    width: 90px !important;
+    height: 90px !important;
+    min-width: 90px !important;
+    min-height: 90px !important;
+    max-width: 90px !important;
+    max-height: 90px !important;
+    border-radius: 9999px !important;
+    object-fit: cover !important;
+  }
+
+  /* 9. Preserve Dynamic Colors, Badges, Borders, and Backgrounds */
+  #print-cv-document [style*="background-color"],
+  #print-cv-document [style*="border-color"],
+  #print-cv-document [style*="color"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 10. Print Customization: Dynamic Spacing (Single-column templates only, keep sidebars full-bleed) */
+  #print-cv-document.cv-standard-template:not(:has(aside))[data-spacing="compact"] {
+    padding: 10mm 11mm !important;
+  }
+  #print-cv-document.cv-standard-template:not(:has(aside))[data-spacing="normal"] {
+    padding: 16mm 14mm !important;
+  }
+  #print-cv-document.cv-standard-template:not(:has(aside))[data-spacing="relaxed"] {
+    padding: 22mm 16mm !important;
+  }
+  #print-cv-document[data-auto-fill="true"] {
+    min-height: 297mm !important;
+  }
 }
+
+/* ========================================================================= */
+/* DYNAMIC TYPOGRAPHY & LAYOUT CUSTOMIZATION (Screen & Print Shared)         */
+/* ========================================================================= */
+
+#interactive-cv-preview,
+#print-cv-document,
+.cv-standard-template,
+.cv-premium-template {
+  --cv-font-scale: 1;
+}
+
+#interactive-cv-preview[data-font-size="small"],
+#print-cv-document[data-font-size="small"] {
+  --cv-font-scale: 0.9;
+}
+
+#interactive-cv-preview[data-font-size="normal"],
+#print-cv-document[data-font-size="normal"] {
+  --cv-font-scale: 1;
+}
+
+#interactive-cv-preview[data-font-size="large"],
+#print-cv-document[data-font-size="large"] {
+  --cv-font-scale: 1.1;
+}
+
+#interactive-cv-preview[data-font-size="xlarge"],
+#print-cv-document[data-font-size="xlarge"] {
+  --cv-font-scale: 1.2;
+}
+
+/* Apply scaling smoothly to titles, headings, and body elements */
+#interactive-cv-preview h1,
+#print-cv-document h1 {
+  font-size: calc(1.75rem * var(--cv-font-scale, 1)) !important;
+  line-height: 1.2 !important;
+}
+
+#interactive-cv-preview h2,
+#print-cv-document h2 {
+  font-size: calc(0.8125rem * var(--cv-font-scale, 1)) !important;
+  line-height: 1.25 !important;
+}
+
+#interactive-cv-preview h3,
+#print-cv-document h3 {
+  font-size: calc(0.875rem * var(--cv-font-scale, 1)) !important;
+  line-height: 1.3 !important;
+}
+
+#interactive-cv-preview h4,
+#print-cv-document h4 {
+  font-size: calc(0.75rem * var(--cv-font-scale, 1)) !important;
+  line-height: 1.3 !important;
+}
+
+#interactive-cv-preview p,
+#interactive-cv-preview li,
+#print-cv-document p,
+#print-cv-document li {
+  font-size: calc(0.75rem * var(--cv-font-scale, 1)) !important;
+}
+
+/* Spacing Adjustments */
+#interactive-cv-preview[data-spacing="compact"] section,
+#print-cv-document[data-spacing="compact"] section {
+  margin-bottom: 0.5rem !important;
+}
+
+#interactive-cv-preview[data-spacing="compact"] .space-y-4 > * + *,
+#interactive-cv-preview[data-spacing="compact"] .space-y-3 > * + *,
+#interactive-cv-preview[data-spacing="compact"] .space-y-2 > * + *,
+#print-cv-document[data-spacing="compact"] .space-y-4 > * + *,
+#print-cv-document[data-spacing="compact"] .space-y-3 > * + *,
+#print-cv-document[data-spacing="compact"] .space-y-2 > * + * {
+  margin-top: 0.375rem !important;
+}
+
+#interactive-cv-preview[data-spacing="compact"] header,
+#print-cv-document[data-spacing="compact"] header {
+  margin-bottom: 0.75rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+#interactive-cv-preview[data-spacing="relaxed"] section,
+#print-cv-document[data-spacing="relaxed"] section {
+  margin-bottom: 1.35rem !important;
+}
+
+#interactive-cv-preview[data-spacing="relaxed"] .space-y-4 > * + *,
+#interactive-cv-preview[data-spacing="relaxed"] .space-y-3 > * + *,
+#interactive-cv-preview[data-spacing="relaxed"] .space-y-2 > * + *,
+#print-cv-document[data-spacing="relaxed"] .space-y-4 > * + *,
+#print-cv-document[data-spacing="relaxed"] .space-y-3 > * + *,
+#print-cv-document[data-spacing="relaxed"] .space-y-2 > * + * {
+  margin-top: 1rem !important;
+}
+
+#interactive-cv-preview[data-spacing="relaxed"] header,
+#print-cv-document[data-spacing="relaxed"] header {
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 0.85rem !important;
+}
+
+/* Smart Page-Filling Mode (Auto-Expand) - Preserves layout direction and structure */
+#interactive-cv-preview[data-auto-fill="true"] {
+  min-height: 1120px !important;
+}
+
+#interactive-cv-preview[data-auto-fill="true"] section,
+#print-cv-document[data-auto-fill="true"] section {
+  margin-bottom: 1.25rem !important;
+}
+
+#interactive-cv-preview[data-auto-fill="true"] p,
+#print-cv-document[data-auto-fill="true"] p {
+  line-height: 1.68 !important;
+  margin-bottom: 0.3rem !important;
+}
+
+#interactive-cv-preview[data-auto-fill="true"] li,
+#print-cv-document[data-auto-fill="true"] li {
+  margin-bottom: 0.25rem !important;
+  line-height: 1.62 !important;
+}
+
+#interactive-cv-preview[data-auto-fill="true"] .space-y-4 > * + *,
+#interactive-cv-preview[data-auto-fill="true"] .space-y-3 > * + *,
+#print-cv-document[data-auto-fill="true"] .space-y-4 > * + *,
+#print-cv-document[data-auto-fill="true"] .space-y-3 > * + * {
+  margin-top: 0.875rem !important;
+}
+
+#interactive-cv-preview[data-auto-fill="true"] .border-b-2,
+#print-cv-document[data-auto-fill="true"] .border-b-2 {
+  margin-bottom: 0.5rem !important;
+  padding-bottom: 0.3rem !important;
+}
+

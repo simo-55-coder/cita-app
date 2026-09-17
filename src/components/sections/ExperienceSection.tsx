@@ -37,6 +37,26 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
     }
   };
 
+  const handleMoveUp = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (index === 0) return;
+    const next = [...experiences];
+    const item = next[index];
+    next[index] = next[index - 1];
+    next[index - 1] = item;
+    onChange(next);
+  };
+
+  const handleMoveDown = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (index === experiences.length - 1) return;
+    const next = [...experiences];
+    const item = next[index];
+    next[index] = next[index + 1];
+    next[index + 1] = item;
+    onChange(next);
+  };
+
   const handleUpdate = (id: string, field: keyof ExperienceItem, value: any) => {
     onChange(
       experiences.map((exp) => {
@@ -128,8 +148,10 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
         </div>
       ) : (
         <div className="space-y-3">
-          {experiences.map((exp) => {
+          {experiences.map((exp, index) => {
             const isExpanded = expandedId === exp.id;
+            const isFirst = index === 0;
+            const isLast = index === experiences.length - 1;
 
             return (
               <div
@@ -157,18 +179,39 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {/* Reorder Buttons */}
+                    <button
+                      type="button"
+                      disabled={isFirst}
+                      onClick={(e) => handleMoveUp(index, e)}
+                      title={t.moveUp}
+                      className={`p-1 rounded-lg transition-colors ${
+                        isFirst ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
+                      }`}
+                    >
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isLast}
+                      onClick={(e) => handleMoveDown(index, e)}
+                      title={t.moveDown}
+                      className={`p-1 rounded-lg transition-colors ${
+                        isLast ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
+                      }`}
+                    >
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+
                     <button
                       type="button"
                       onClick={(e) => handleDelete(exp.id, e)}
                       title={t.delete}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                    <div className="text-slate-400">
-                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                    </div>
                   </div>
                 </div>
 

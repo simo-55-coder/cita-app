@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { CVData } from '../types';
+import { CVData, CVTheme } from '../types';
 import { CVDocument } from './CVDocument';
 import { AdModal } from './AdModal';
 import { showRewardedAd } from '../lib/admob';
+import { CVStrengthMeter } from './CVStrengthMeter';
+import { CustomizationToolbar } from './CustomizationToolbar';
 import {
+  Share2,
   ZoomIn,
   ZoomOut,
   Maximize2,
@@ -21,6 +24,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 interface PreviewPanelProps {
   data: CVData;
+  onUpdateCV?: React.Dispatch<React.SetStateAction<CVData>>;
   onBackToEdit: () => void;
   onOpenDriveModal: () => void;
   isDriveConnected: boolean;
@@ -28,6 +32,7 @@ interface PreviewPanelProps {
 
 export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   data,
+  onUpdateCV,
   onBackToEdit,
   onOpenDriveModal,
   isDriveConnected,
@@ -36,17 +41,60 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [customZoom, setCustomZoom] = useState<number>(1);
   const [zoomMode, setZoomMode] = useState<'fit' | 'custom'>('fit');
+
+  const handleUpdateTheme = (updates: Partial<CVTheme>) => {
+    if (onUpdateCV) {
+      onUpdateCV((prev) => ({
+        ...prev,
+        theme: {
+          ...prev.theme,
+          ...updates,
+        },
+      }));
+    }
+  };
+
+  const [fitScale, setFitScale] = useState<number>(1);
+  const CV_WIDTH = 794; // Fixed A4 width
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const calculateScale = () => {
+      if (containerRef.current) {
+        // Add some padding (e.g., 32px total) to the available width
+        const availableWidth = containerRef.current.clientWidth - 32;
+        const newScale = Math.min(availableWidth / CV_WIDTH, 1);
+        setFitScale(newScale);
+      }
+    };
+
+    calculateScale();
+
+    const resizeObserver = new ResizeObserver(() => {
+      calculateScale();
+    });
+
+    resizeObserver.observe(containerRef.current);
+    
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  const effectiveZoom = zoomMode === 'fit' ? fitScale : customZoom;
+
   const [printStatus, setPrintStatus] = useState<{
     show: boolean;
     isError?: boolean;
     message?: string;
   } | null>(null);
 
+  const [generatedPdf, setGeneratedPdf] = useState<{ file: File; filename: string; objectUrl: string } | null>(null);
+
   const [showAdModal, setShowAdModal] = useState(false);
 
   // Auto-dismiss success notification after 5 seconds
   useEffect(() => {
-    if (printStatus?.show && !printStatus.isError) {
+    if (printStatus?.show && !printStatus.isError && !generatedPdf) {
       const timer = window.setTimeout(() => {
         setPrintStatus(null);
       }, 5000);
@@ -91,6 +139,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   };
 
   const executeDownloadPdf = async () => {
+    setGeneratedPdf(null);
     const safeName = (data.personal?.fullName || 'CV').trim();
     const filename = `${safeName.replace(/\s+/g, '_')}_CV.pdf`;
 
@@ -100,7 +149,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       message: 'Preparing document (Ads help keep this app free)...',
     });
 
-    // Display rewarded ad (fails gracefully and immediately proceeds on Web/Error)
     await showRewardedAd();
 
     setPrintStatus({
@@ -110,55 +158,46 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     });
 
     try {
-      // Find the element to convert
       const element = document.getElementById('interactive-cv-preview');
       if (!element) {
         throw new Error('CV document not found.');
       }
 
-      // Dynamically import libraries
-      const html2canvas = (await import('html2canvas-pro')).default;
+      const htmlToImage = await import('html-to-image');
       const { jsPDF } = await import('jspdf');
-      
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        
-        windowWidth: 794,
-        windowHeight: 1123,
-        scrollY: 0,
-        scrollX: 0,
-        onclone: (doc: Document) => {
-          const el = doc.getElementById('interactive-cv-preview');
-          if (el) {
-            // Force A4 width constraints (approx 210mm at 96dpi is 794px) but let height scale automatically
-            el.style.width = '794px';
-            el.style.maxWidth = '794px';
-            el.style.minWidth = '794px';
-            el.style.height = 'auto';
-            el.style.minHeight = '1123px';
-            el.style.maxHeight = 'none';
-            el.style.transform = 'none';
-            el.style.overflow = 'visible'; // Allow content to expand beyond a single A4 page smoothly
-            
-            // Remove shadows and borders for the PDF version
-            el.classList.remove('shadow-xl', 'border', 'border-slate-200/90', 'select-none');
-            
-            // Ensure proper padding for A4 size (equivalent to p-8)
-            el.style.padding = '40px';
-            el.style.margin = '0';
 
-            // Critical fix for Arabic: Force normal letter-spacing globally inside the clone
-            // Tailwind's tracking classes (tracking-tight, etc.) break Arabic cursive joining
-            const allElements = el.querySelectorAll('*');
-            allElements.forEach((child) => {
-              (child as HTMLElement).style.letterSpacing = 'normal';
-            });
-          }
+      // Temporarily prepare element for pristine high-fidelity capture
+      const originalTransform = element.style.transform;
+      const originalBoxShadow = element.style.boxShadow;
+      const hadShadow = element.classList.contains('shadow-xl') || element.classList.contains('shadow-sm');
+      const hadBorder = element.classList.contains('border');
+      
+      element.style.transform = 'none';
+      element.style.boxShadow = 'none';
+      element.classList.remove('shadow-xl', 'shadow-sm', 'border');
+
+      await new Promise(resolve => setTimeout(resolve, 250));
+
+      const isDarkTemplate = data.theme?.template === 'corporate-elite';
+      const bgColor = isDarkTemplate ? '#020617' : '#ffffff';
+
+      const imgData = await htmlToImage.toJpeg(element, {
+        quality: 0.98,
+        pixelRatio: 2,
+        backgroundColor: bgColor,
+        style: {
+          transform: 'none',
+          boxShadow: 'none',
+          margin: '0',
         }
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      // Restore element
+      element.style.transform = originalTransform;
+      element.style.boxShadow = originalBoxShadow;
+      if (hadShadow) element.classList.add('shadow-xl');
+      if (hadBorder) element.classList.add('border');
+
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -167,56 +206,33 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
       
       let heightLeft = imgHeight;
       let position = 0;
 
-      // Add first page
       pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
       heightLeft -= pageHeight;
 
-      // Add subsequent pages if content overflows
-      while (heightLeft > 0) {
+      while (heightLeft > 1) { // 1mm threshold to prevent blank pages
         position = position - pageHeight;
         pdf.addPage();
         pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
         heightLeft -= pageHeight;
       }
 
-      // Convert generated PDF to Blob/File for Web Share API
       const pdfBlob = pdf.output('blob');
       const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
-
-      let shared = false;
+      const objectUrl = URL.createObjectURL(pdfBlob);
       
-      // Try Web Share API first (Native Mobile / Supported Browsers)
-      if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-        try {
-          await navigator.share({
-            files: [pdfFile],
-            title: filename,
-          });
-          shared = true;
-        } catch (shareErr: any) {
-          // Ignore AbortError (user cancelled share), but log others
-          if (shareErr.name !== 'AbortError') {
-            console.error('Share API failed:', shareErr);
-          } else {
-            shared = true; // User cancelled, but the API worked. No need to trigger fallback download.
-          }
-        }
-      }
-
-      // Fallback: Standard Web Download
-      if (!shared) {
-        pdf.save(filename);
-      }
+      setGeneratedPdf({ file: pdfFile, filename, objectUrl });
 
       setPrintStatus({
         show: true,
         isError: false,
-        message: shared ? 'PDF processed successfully!' : 'PDF downloaded successfully!',
+        message: 'PDF generated successfully! Choose an action below:',
       });
     } catch (err: any) {
       console.error('PDF generation failed:', err);
@@ -244,48 +260,12 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           <span>{t.previewControls.backToEditor}</span>
         </button>
 
-        {/* Zoom Controls */}
-        <div className="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200/80 shadow-xs">
-          <button
-            id="btn-preview-zoom-out"
-            type="button"
-            onClick={handleZoomOut}
-            title={t.previewControls.zoomOut}
-            className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white active:scale-95 transition-all cursor-pointer pointer-events-auto touch-manipulation"
-          >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
-          <button
-            id="btn-preview-fit"
-            type="button"
-            onClick={handleFit}
-            className="px-2 py-0.5 text-[11px] font-bold text-violet-700 hover:text-violet-800 rounded-md transition-colors cursor-pointer pointer-events-auto touch-manipulation"
-          >
-            {zoomMode === 'fit' ? 'Fit' : `${Math.round(customZoom * 100)}%`}
-          </button>
-          <button
-            id="btn-preview-zoom-in"
-            type="button"
-            onClick={handleZoomIn}
-            title={t.previewControls.zoomIn}
-            className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white active:scale-95 transition-all cursor-pointer pointer-events-auto touch-manipulation"
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
-          </button>
-          <button
-            id="btn-preview-reset-fit"
-            type="button"
-            onClick={handleFit}
-            title={t.previewControls.fitToScreen}
-            className={`p-1.5 rounded-lg ml-0.5 transition-all cursor-pointer pointer-events-auto touch-manipulation ${
-              zoomMode === 'fit' ? 'text-violet-700 bg-white shadow-xs font-bold' : 'text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Maximize2 className="w-3 h-3" />
-          </button>
+        {/* Readiness/Strength Indicator replacing Zoom controls */}
+        <div className="flex-1 flex justify-center">
+          <CVStrengthMeter data={data} variant="mini" />
         </div>
 
-        {/* Action Buttons: Download PDF & Print */}
+        {/* Action Buttons: Download PDF */}
         <div className="flex items-center gap-1.5 shrink-0 pointer-events-auto">
           <button
             id="btn-preview-download"
@@ -299,6 +279,9 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Live Customization Toolbar (Font Size, Spacing & Smart Auto-Fill) */}
+      <CustomizationToolbar theme={data.theme} onUpdateTheme={handleUpdateTheme} />
 
       {/* Direct Feedback Alert / Fallback Toast */}
       {printStatus?.show && (
@@ -331,19 +314,56 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
               </button>
             </div>
 
-            {/* Direct fallback trigger for iframe blocking */}
-            <div className="flex items-center gap-2 pt-1 border-t border-black/10">
-              <button
-                type="button"
-                onClick={handleDirectFallback}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-xs font-bold shadow-xs transition-all cursor-pointer"
-              >
-                <ExternalLink className="w-3.5 h-3.5 text-violet-600" />
-                <span>{t.previewControls.openInNewTab}</span>
-              </button>
-              <span className="text-[11px] opacity-80 flex-1">
-                {t.previewControls.printIframeHelp}
-              </span>
+            {/* Direct fallback trigger for iframe blocking or Action buttons for generated PDF */}
+            <div className="flex flex-col gap-2 pt-1 border-t border-black/10">
+              
+              {generatedPdf ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  {navigator.canShare && navigator.canShare({ files: [generatedPdf.file] }) && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.share({
+                            files: [generatedPdf.file],
+                            title: generatedPdf.filename,
+                          });
+                          setPrintStatus(null);
+                        } catch (err: any) {
+                          if (err.name !== 'AbortError') console.error('Share error:', err);
+                        }
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      <span>{(t.previewControls as Record<string, string>).share || (isRTL ? 'مشاركة PDF' : 'Share PDF')}</span>
+                    </button>
+                  )}
+                  <a
+                    href={generatedPdf.objectUrl}
+                    download={generatedPdf.filename}
+                    onClick={() => setPrintStatus(null)}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-white text-xs font-bold shadow-xs transition-all cursor-pointer text-center"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>{t.previewControls.downloadPdf || 'Download'}</span>
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleDirectFallback}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-xs font-bold shadow-xs transition-all cursor-pointer shrink-0"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-violet-600" />
+                    <span>{t.previewControls.openInNewTab}</span>
+                  </button>
+                  <span className="text-[11px] opacity-80 flex-1 leading-tight">
+                    {t.previewControls.printIframeHelp}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -357,7 +377,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
         {/* Dynamic centered paper container */}
         <div
           className="w-full flex justify-center transition-transform duration-150 ease-out origin-top"
-          style={customZoom !== 1 ? { transform: `scale(${customZoom})` } : undefined}
+          style={{ transform: `scale(${effectiveZoom})` }}
         >
           <CVDocument data={data} id="interactive-cv-preview" />
         </div>

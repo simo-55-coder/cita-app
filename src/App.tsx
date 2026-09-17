@@ -111,6 +111,12 @@ function CVBuilderApp() {
         case 'hobbies':
           newData.hobbies = [];
           break;
+        case 'projects':
+          newData.projects = [];
+          break;
+        case 'certifications':
+          newData.certifications = [];
+          break;
         case 'theme':
           newData.theme = { primaryColor: '#4f46e5', fontFamily: 'sans', template: 'modern' };
           break;
@@ -169,6 +175,7 @@ function CVBuilderApp() {
             ) : (
               <PreviewPanel
                 data={cvData}
+                onUpdateCV={handleUpdateCV}
                 onBackToEdit={() => setViewMode('wizard')}
                 onOpenDriveModal={() => setIsDriveModalOpen(true)}
                 isDriveConnected={!!currentUser}
@@ -221,6 +228,8 @@ function CVBuilderApp() {
           <SettingsModal
             isOpen={isSettingsOpen}
             onClose={() => setIsSettingsOpen(false)}
+            cvData={cvData}
+            onImportCV={handleLoadCV}
           />
         </div>
       </div>

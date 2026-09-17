@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { WizardTabKey } from '../types';
-import { User, FileText, Briefcase, GraduationCap, Code2, Languages, Heart, LayoutTemplate } from 'lucide-react';
+import { User, FileText, Briefcase, GraduationCap, Code2, Languages, Heart, FolderGit2, Award, LayoutTemplate } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -22,6 +22,8 @@ const TABS: TabDef[] = [
   { key: 'education', icon: GraduationCap },
   { key: 'skills', icon: Code2 },
   { key: 'languages', icon: Languages },
+  { key: 'projects', icon: FolderGit2 },
+  { key: 'certifications', icon: Award },
   { key: 'hobbies', icon: Heart },
   { key: 'theme', icon: LayoutTemplate },
 ];

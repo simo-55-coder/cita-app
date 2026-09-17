@@ -46,7 +46,27 @@ export interface LanguageItem {
   proficiency: 'Native' | 'Fluent' | 'Professional' | 'Intermediate' | 'Basic';
 }
 
+export interface ProjectItem {
+  id: string;
+  title: string;
+  role?: string;
+  description: string;
+  technologies?: string;
+  link?: string;
+}
+
+export interface CertificationItem {
+  id: string;
+  name: string;
+  issuer: string;
+  date: string;
+  link?: string;
+}
+
 export type TemplateId = 'modern' | 'executive' | 'creative' | 'minimalist' | 'executive-modern' | 'creative-minimal' | 'corporate-elite';
+
+export type FontSizeOption = 'small' | 'normal' | 'large' | 'xlarge';
+export type SpacingOption = 'compact' | 'normal' | 'relaxed';
 
 export interface CVTheme {
   primaryColor: string;
@@ -54,6 +74,10 @@ export interface CVTheme {
   fontFamily: 'sans' | 'serif' | 'mono';
   template: TemplateId;
   layoutStyle?: 'modern' | 'minimal' | 'executive' | string;
+  fontSize?: FontSizeOption;
+  fontSizeScale?: number;
+  spacing?: SpacingOption;
+  autoFillPage?: boolean;
 }
 
 export interface CVData {
@@ -67,6 +91,8 @@ export interface CVData {
   skills: SkillItem[];
   languages: LanguageItem[];
   hobbies: string[];
+  projects?: ProjectItem[];
+  certifications?: CertificationItem[];
   theme: CVTheme;
   cvLanguage?: Language;
 }
@@ -81,6 +107,8 @@ export type WizardTabKey =
   | 'skills'
   | 'languages'
   | 'hobbies'
+  | 'projects'
+  | 'certifications'
   | 'theme';
 
 export interface DriveFileItem {

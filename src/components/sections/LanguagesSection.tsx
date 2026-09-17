@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LanguageItem } from '../../types';
-import { Languages, Plus, Trash2 } from 'lucide-react';
+import { Languages, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 interface LanguagesSectionProps {
@@ -37,6 +37,24 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({ languages, o
 
   const handleRemove = (id: string) => {
     onChange(languages.filter((l) => l.id !== id));
+  };
+
+  const handleMoveUp = (index: number) => {
+    if (index === 0) return;
+    const next = [...languages];
+    const item = next[index];
+    next[index] = next[index - 1];
+    next[index - 1] = item;
+    onChange(next);
+  };
+
+  const handleMoveDown = (index: number) => {
+    if (index === languages.length - 1) return;
+    const next = [...languages];
+    const item = next[index];
+    next[index] = next[index + 1];
+    next[index + 1] = item;
+    onChange(next);
   };
 
   const handleUpdateProficiency = (id: string, newProf: LanguageItem['proficiency']) => {
@@ -102,38 +120,67 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({ languages, o
           <p className="text-xs text-slate-400 italic">{t.languages.noLanguages}</p>
         ) : (
           <div className="space-y-2">
-            {languages.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/90 shadow-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-800">{item.name}</span>
-                  <select
-                    value={item.proficiency}
-                    onChange={(e) =>
-                      handleUpdateProficiency(item.id, e.target.value as LanguageItem['proficiency'])
-                    }
-                    className="bg-violet-50 border border-violet-200 rounded-lg text-[11px] font-bold text-violet-700 px-2 py-1 outline-none cursor-pointer"
-                  >
-                    {profOptions.map((p) => (
-                      <option key={p} value={p}>
-                        {t.proficiencies[p]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            {languages.map((item, index) => {
+              const isFirst = index === 0;
+              const isLast = index === languages.length - 1;
 
-                <button
-                  type="button"
-                  onClick={() => handleRemove(item.id)}
-                  title={t.delete}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-200/90 shadow-xs"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))}
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                    <span className="text-xs font-bold text-slate-800">{item.name}</span>
+                    <select
+                      value={item.proficiency}
+                      onChange={(e) =>
+                        handleUpdateProficiency(item.id, e.target.value as LanguageItem['proficiency'])
+                      }
+                      className="bg-violet-50 border border-violet-200 rounded-lg text-[11px] font-bold text-violet-700 px-2 py-1 outline-none cursor-pointer"
+                    >
+                      {profOptions.map((p) => (
+                        <option key={p} value={p}>
+                          {t.proficiencies[p]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      disabled={isFirst}
+                      onClick={() => handleMoveUp(index)}
+                      title={t.moveUp}
+                      className={`p-1 rounded-lg transition-colors ${
+                        isFirst ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-200/60'
+                      }`}
+                    >
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isLast}
+                      onClick={() => handleMoveDown(index)}
+                      title={t.moveDown}
+                      className={`p-1 rounded-lg transition-colors ${
+                        isLast ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-200/60'
+                      }`}
+                    >
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemove(item.id)}
+                      title={t.delete}
+                      className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

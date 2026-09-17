@@ -29,6 +29,10 @@ export const getEmptyCV = (lang: Language): CVData => {
       fontFamily: 'sans',
       layoutStyle: 'modern',
       template: 'modern',
+      fontSize: 'normal',
+      fontSizeScale: 1,
+      spacing: 'normal',
+      autoFillPage: false,
     },
   };
 };
