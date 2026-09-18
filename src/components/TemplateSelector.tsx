@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TemplateId } from '../types';
 import { useLanguage } from '../context/LanguageContext';
-import { Check, Sparkles, LayoutTemplate, Eye, Lock, PlayCircle, Unlock } from 'lucide-react';
+import { Check, Sparkles, LayoutTemplate, Eye, Lock, PlayCircle, Unlock, CloudOff } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface TemplateSelectorProps {
@@ -319,6 +319,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const [adModalTemplate, setAdModalTemplate] = useState<TemplateId | null>(null);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -347,7 +348,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const handleSelectTemplateClick = (tmpl: TemplateItemDef) => {
     if (tmpl.isPremium && !unlockedTemplates.includes(tmpl.id)) {
       if (isOffline) {
-        alert(isRTL ? 'عذراً، تحتاج إلى اتصال بالإنترنت لفتح القوالب المميزة.' : 'Sorry, you need an internet connection to unlock premium templates.');
+        setShowOfflineModal(true);
         return;
       }
       setAdModalTemplate(tmpl.id);
@@ -546,6 +547,32 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 {isRTL ? 'إلغاء' : 'Cancel'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showOfflineModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 text-center">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500">
+              <CloudOff className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 mb-2">
+              {isRTL ? 'غير متصل بالإنترنت' : 'Offline'}
+            </h3>
+            <p className="text-sm text-slate-600 mb-6">
+              {isRTL
+                ? 'عذراً، تحتاج إلى اتصال بالإنترنت لفتح القوالب المميزة.'
+                : 'Sorry, you need an internet connection to unlock premium templates.'}
+            </p>
+            
+            <button
+              type="button"
+              onClick={() => setShowOfflineModal(false)}
+              className="w-full py-3 rounded-xl text-sm font-bold text-white bg-slate-800 hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
+            >
+              <span>{isRTL ? 'حسناً' : 'OK'}</span>
+            </button>
           </div>
         </div>
       )}
