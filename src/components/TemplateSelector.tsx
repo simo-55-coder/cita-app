@@ -318,8 +318,14 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const [unlockedTemplates, setUnlockedTemplates] = useState<string[]>([]);
   const [adModalTemplate, setAdModalTemplate] = useState<TemplateId | null>(null);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
     try {
       // Clear old localStorage just in case it conflicts
       localStorage.removeItem('unlocked_premium_templates');
@@ -331,10 +337,19 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
     } catch (e) {
       console.warn('Failed to load unlocked templates', e);
     }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   const handleSelectTemplateClick = (tmpl: TemplateItemDef) => {
     if (tmpl.isPremium && !unlockedTemplates.includes(tmpl.id)) {
+      if (isOffline) {
+        alert(isRTL ? 'عذراً، تحتاج إلى اتصال بالإنترنت لفتح القوالب المميزة.' : 'Sorry, you need an internet connection to unlock premium templates.');
+        return;
+      }
       setAdModalTemplate(tmpl.id);
     } else {
       onSelectTemplate(tmpl.id);
@@ -423,7 +438,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 ) : (
                   <span className="text-[11px] font-medium text-slate-400 group-hover:text-slate-600 flex items-center gap-1">
                     <Sparkles className="w-3 h-3 opacity-60" />
-                    <>{tmpl.isPremium && !unlockedTemplates.includes(tmpl.id) ? <span className="flex items-center gap-1"><Lock className="w-3 h-3" /><span>{isRTL ? 'فتح القالب (إعلان)' : 'Unlock (Ad)'}</span></span> : <span>{t.templates.selectButton}</span>}</>
+                    <>{tmpl.isPremium && !unlockedTemplates.includes(tmpl.id) ? (isOffline ? <span className="flex items-center gap-1 text-slate-400"><Lock className="w-3 h-3" /><span>{isRTL ? 'غير متصل (مغلق)' : 'Offline (Locked)'}</span></span> : <span className="flex items-center gap-1"><Lock className="w-3 h-3" /><span>{isRTL ? 'فتح القالب (إعلان)' : 'Unlock (Ad)'}</span></span>) : <span>{t.templates.selectButton}</span>}</>
                   </span>
                 )}
               </div>
@@ -483,7 +498,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                     <span>{t.templates.selectedButton}</span>
                   </>
                 ) : (
-                  <>{tmpl.isPremium && !unlockedTemplates.includes(tmpl.id) ? <span className="flex items-center gap-1"><Lock className="w-3 h-3" /><span>{isRTL ? 'فتح القالب (إعلان)' : 'Unlock (Ad)'}</span></span> : <span>{t.templates.selectButton}</span>}</>
+                  <>{tmpl.isPremium && !unlockedTemplates.includes(tmpl.id) ? (isOffline ? <span className="flex items-center gap-1"><Lock className="w-3 h-3" /><span>{isRTL ? 'تحتاج إنترنت (مغلق)' : 'Offline (Locked)'}</span></span> : <span className="flex items-center gap-1"><Lock className="w-3 h-3" /><span>{isRTL ? 'فتح القالب (إعلان)' : 'Unlock (Ad)'}</span></span>) : <span>{t.templates.selectButton}</span>}</>
                 )}
               </button>
             </div>
