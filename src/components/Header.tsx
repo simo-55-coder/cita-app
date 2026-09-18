@@ -58,28 +58,26 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Language Switcher Segmented Control (AR | FR | EN) */}
         <div
           id="language-switcher"
-          className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200/80 shadow-xs"
+          className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/80 shadow-xs"
         >
           {LANGUAGES.map((item) => {
             const isSelected = lang === item.code;
             return (
               <button
                 key={item.code}
-                id={`lang-btn-${item.code}`}
+                type="button"
                 onClick={() => setLang(item.code)}
                 title={item.name}
-                className={`relative px-2 py-1 text-[11px] font-bold rounded-lg transition-all duration-150 outline-none select-none ${
-                  isSelected ? 'text-white' : 'text-slate-600 hover:text-slate-900'
-                }`}
+                style={isSelected ? { backgroundColor: '#7C3AED', color: '#ffffff' } : undefined}
+                className={`
+                  px-2 py-1 text-[11px] font-bold rounded-md transition-all duration-150 outline-none select-none
+                  ${isSelected 
+                    ? 'shadow-xs' 
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                  }
+                `}
               >
-                {isSelected && (
-                  <motion.div
-                    layoutId="activeLanguagePill"
-                    className="absolute inset-0 bg-violet-600 rounded-lg shadow-xs -z-10"
-                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                  />
-                )}
-                <span>{item.label}</span>
+                {item.label}
               </button>
             );
           })}
