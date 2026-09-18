@@ -46,15 +46,6 @@ export interface LanguageItem {
   proficiency: 'Native' | 'Fluent' | 'Professional' | 'Intermediate' | 'Basic';
 }
 
-export interface ProjectItem {
-  id: string;
-  title: string;
-  role?: string;
-  description: string;
-  technologies?: string;
-  link?: string;
-}
-
 export interface CertificationItem {
   id: string;
   name: string;
@@ -91,7 +82,6 @@ export interface CVData {
   skills: SkillItem[];
   languages: LanguageItem[];
   hobbies: string[];
-  projects?: ProjectItem[];
   certifications?: CertificationItem[];
   theme: CVTheme;
   cvLanguage?: Language;
@@ -107,7 +97,6 @@ export type WizardTabKey =
   | 'skills'
   | 'languages'
   | 'hobbies'
-  | 'projects'
   | 'certifications'
   | 'theme';
 

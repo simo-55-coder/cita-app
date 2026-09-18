@@ -111,9 +111,6 @@ function CVBuilderApp() {
         case 'hobbies':
           newData.hobbies = [];
           break;
-        case 'projects':
-          newData.projects = [];
-          break;
         case 'certifications':
           newData.certifications = [];
           break;

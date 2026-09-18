@@ -58,7 +58,7 @@ export const CustomizationToolbar: React.FC<CustomizationToolbarProps> = ({
   };
 
   const handleStepScale = (delta: number) => {
-    const newScale = Number(Math.max(0.85, Math.min(1.25, currentScale + delta)).toFixed(2));
+    const newScale = Number(Math.max(0.85, Math.min(2.0, currentScale + delta)).toFixed(2));
     let matchingOption: FontSizeOption = 'normal';
     if (newScale <= 0.92) matchingOption = 'small';
     else if (newScale >= 1.18) matchingOption = 'xlarge';
@@ -184,7 +184,7 @@ export const CustomizationToolbar: React.FC<CustomizationToolbarProps> = ({
                   id="btn-font-scale-plus"
                   type="button"
                   onClick={() => handleStepScale(0.05)}
-                  disabled={currentScale >= 1.25}
+                  disabled={currentScale >= 2.0}
                   className="p-1.5 rounded-md hover:bg-white text-slate-700 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
                   title="Increase font size (+5%)"
                 >

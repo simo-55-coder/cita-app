@@ -12,7 +12,6 @@ import {
   Code2,
   Languages,
   Heart,
-  FolderGit2,
   Award,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -26,7 +25,7 @@ export interface ContentDensityInfo {
 }
 
 export const getContentDensity = (data: CVData): ContentDensityInfo => {
-  const { summary, experiences, education, skills, languages, hobbies, projects, certifications } = data;
+  const { summary, experiences, education, skills, languages, hobbies, certifications } = data;
   let mainScore = 0;
   let sideScore = 0;
 
@@ -50,13 +49,6 @@ export const getContentDensity = (data: CVData): ContentDensityInfo => {
   (education || []).forEach((edu) => {
     mainScore += 3.5;
     if (edu.fieldOfStudy || edu.gpa) mainScore += 1.5;
-  });
-
-  // Projects weight
-  (projects || []).forEach((proj) => {
-    mainScore += 3.5;
-    const descLen = (proj.description || '').trim().length;
-    mainScore += Math.min(descLen / 50, 4);
   });
 
   // Certifications weight
@@ -113,7 +105,7 @@ export const getCustomizationData = (
     if (Math.abs(baseScale - 1.0) < 0.05 && fontSize === 'normal') {
       effectiveFontScale = contentDensity?.isDense ? 1.02 : contentDensity?.isSparse ? 1.10 : 1.07;
     } else {
-      effectiveFontScale = Math.min(1.25, baseScale * (contentDensity?.isDense ? 1.0 : 1.05));
+      effectiveFontScale = Math.min(2.0, baseScale * (contentDensity?.isDense ? 1.0 : 1.05));
     }
   }
 
@@ -176,7 +168,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
   isPrint = false,
 }) => {
   const { t, isRTL } = useLanguage();
-  const { personal, summary, experiences, education, skills, languages, hobbies, projects, certifications, theme } = data;
+  const { personal, summary, experiences, education, skills, languages, hobbies, certifications, theme } = data;
   const primary = theme?.primaryColor || '#7c3aed';
   const templateId: TemplateId = (theme?.template || theme?.layoutStyle || 'modern') as TemplateId;
 
@@ -232,7 +224,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
         id={id}
         dir={isRTL ? 'rtl' : 'ltr'}
         {...dataAttrs}
-        className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-between' : ''} mx-auto`}
+        className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-start' : ''} mx-auto`}
         style={{ fontFamily: getFontFamily(), ...cssVars }}
       >
           {/* Top Banner / Header */}
@@ -321,9 +313,9 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           )}
 
           {/* Main 2-Column Grid */}
-          <div className={`flex flex-row gap-5 min-h-0 ${isAutoFill ? 'flex-1 justify-between' : ''}`}>
+          <div className={`flex flex-row gap-5 min-h-0 ${isAutoFill ? 'flex-1 justify-start' : ''}`}>
             {/* Main Column (Experience & Education) */}
-            <div className={`w-[64%] shrink-0 min-w-0 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : effectiveMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
+            <div className={`w-[64%] shrink-0 min-w-0 flex flex-col ${isAutoFill ? 'justify-start space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : effectiveMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
               {/* Work Experience */}
               {experiences && experiences.length > 0 && (
                 <section className="min-w-0">
@@ -415,10 +407,47 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   </div>
                 </section>
               )}
-            </div>
 
+              {certifications && certifications.length > 0 && (
+                <section className="min-w-0">
+                  <h2
+                    className="text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-2 sm:mb-2.5 border-b flex items-center gap-1.5"
+                    style={{ color: primary, borderColor: `${primary}30` }}
+                  >
+                    <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                    <span>{t.certifications?.sectionTitle || 'Certifications'}</span>
+                  </h2>
+                  <div className={`min-w-0 ${isDense ? 'space-y-2' : isMainSparse ? 'space-y-3.5 sm:space-y-4' : 'space-y-2.5 sm:space-y-3'}`}>
+                    {certifications.map((cert) => (
+                      <div
+                        key={cert.id}
+                        className={`relative ${
+                          isRTL ? 'pr-2.5 sm:pr-3 border-e-2' : 'pl-2.5 sm:pl-3 border-s-2'
+                        }`}
+                        style={{ borderColor: `${primary}40` }}
+                      >
+                        <div className="flex flex-nowrap justify-between items-baseline gap-1 mb-0.5">
+                          <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{cert.name}</h3>
+                          <span className="text-[12px] font-medium text-slate-500 shrink-0 overflow-hidden max-w-full">
+                            {cert.date}
+                          </span>
+                        </div>
+                        <div className="text-[12px] font-medium text-slate-700 flex flex-wrap items-center gap-x-1.5">
+                          <span style={{ color: primary }} className="break-words">{cert.issuer}</span>
+                        </div>
+                        {cert.link && (
+                          <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-[12px] text-blue-600 underline mt-0.5 break-words block">
+                            {cert.link}
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
             {/* Sidebar Column (Skills, Languages, Hobbies) */}
-            <div className={`w-[32%] shrink-0 min-w-0 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : 'space-y-4 sm:space-y-5'}`}>
+<div className={`w-[32%] shrink-0 min-w-0 flex flex-col ${isAutoFill ? 'justify-start space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : 'space-y-4 sm:space-y-5'}`}>
               {/* Skills */}
               {skills && skills.length > 0 && (
                 <section className="min-w-0">
@@ -513,7 +542,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
         id={id}
         dir={isRTL ? 'rtl' : 'ltr'}
         {...dataAttrs}
-        className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-between' : ''} mx-auto`}
+        className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-start' : ''} mx-auto`}
         style={{ fontFamily: getFontFamily(), ...cssVars }}
       >
           {/* Formal Centered Header */}
@@ -577,7 +606,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
             </div>
           </header>
 
-          <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : effectiveSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
+          <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-start space-y-6 sm:space-y-8' : isDense ? 'space-y-3.5' : effectiveSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
             {/* Executive Summary */}
             {summary && (
               <section className="min-w-0">
@@ -680,54 +709,6 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                           </div>
                         )}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Key Projects (if present) */}
-            {projects && projects.length > 0 && (
-              <section className="min-w-0">
-                <div className="flex items-center justify-center gap-3 my-2 sm:my-2.5">
-                  <div className="h-px flex-1 bg-slate-300" />
-                  <h2
-                    className="text-xs sm:text-[13px] font-bold uppercase tracking-widest px-3 py-0.5 rounded bg-slate-100/90 border border-slate-300/80 text-slate-900 shadow-2xs"
-                    style={{ color: primary }}
-                  >
-                    {t.projects?.sectionTitle || 'Projects'}
-                  </h2>
-                  <div className="h-px flex-1 bg-slate-300" />
-                </div>
-
-                <div className={`min-w-0 ${isDense ? 'space-y-2' : isSparse ? 'space-y-3.5 sm:space-y-4' : 'space-y-2.5 sm:space-y-3'}`}>
-                  {projects.map((proj) => (
-                    <div key={proj.id} className="min-w-0">
-                      <div className="flex flex-nowrap justify-between items-baseline gap-1">
-                        <div className="text-xs sm:text-[13px] font-bold text-slate-900 break-words flex items-center gap-1.5">
-                          <span>{proj.name}</span>
-                          {proj.role && <span className="font-semibold" style={{ color: primary }}>({proj.role})</span>}
-                        </div>
-                        {proj.link && (
-                          <span dir="ltr" className="text-[11px] text-slate-500 shrink-0 max-w-[200px] truncate">
-                            {proj.link.replace(/^https?:\/\//, '')}
-                          </span>
-                        )}
-                      </div>
-                      {proj.technologies && proj.technologies.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-0.5">
-                          {proj.technologies.map((tech, idx) => (
-                            <span key={idx} className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {proj.description && (
-                        <p className={`text-[12px] text-slate-600 mt-1 break-words ${isDense ? 'leading-[1.55]' : isSparse ? 'leading-[1.78]' : 'leading-[1.6]'}`}>
-                          {renderText(proj.description)}
-                        </p>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -848,7 +829,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
       >
           {/* Accent Sidebar (34% width on desktop/print, full width on mobile) */}
           <aside
-            className={`w-[34%] min-w-0 p-4 sm:p-5 flex flex-col shrink-0 ${isAutoFill ? 'justify-between h-full min-h-[297mm]' : 'justify-start'}`}
+            className={`w-[34%] min-w-0 p-4 sm:p-5 flex flex-col shrink-0 ${isAutoFill ? 'justify-start h-full min-h-[297mm]' : 'justify-start'}`}
             style={{
               backgroundColor: `${primary}10`,
               borderRight: isRTL ? 'none' : `2px solid ${primary}25`,
@@ -880,7 +861,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
               </div>
             </div>
 
-            <div className={`w-full min-w-0 flex flex-col ${isAutoFill ? 'flex-1 justify-between space-y-4 sm:space-y-6 mt-3' : isDense ? 'space-y-3 mt-2' : 'space-y-3.5 sm:space-y-4 mt-2'}`}>
+            <div className={`w-full min-w-0 flex flex-col ${isAutoFill ? 'flex-1 justify-start space-y-4 sm:space-y-6 mt-3' : isDense ? 'space-y-3 mt-2' : 'space-y-3.5 sm:space-y-4 mt-2'}`}>
               {/* Contact Details */}
               <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-[13px] text-slate-700 pt-1.5 sm:pt-2 border-t border-slate-200">
                 {personal.email && (
@@ -1014,7 +995,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           </aside>
 
           {/* Main Body (66% width) */}
-          <main className={`w-[66%] flex-1 min-w-0 p-4 sm:p-6 md:p-7 flex flex-col ${isAutoFill ? 'justify-between h-full min-h-[297mm]' : 'justify-start'}`}>
+          <main className={`w-[66%] flex-1 min-w-0 p-4 sm:p-6 md:p-7 flex flex-col ${isAutoFill ? 'justify-start h-full min-h-[297mm]' : 'justify-start'}`}>
             {/* Header Title & Tagline */}
             <div className="border-b-2 pb-2 sm:pb-3 mb-2 sm:mb-3.5 shrink-0" style={{ borderColor: `${primary}25` }}>
               <h1
@@ -1028,7 +1009,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
               </div>
             </div>
 
-            <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3' : effectiveMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
+            <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-start space-y-6 sm:space-y-8' : isDense ? 'space-y-3' : effectiveMainSparse ? 'space-y-6 sm:space-y-7' : 'space-y-4 sm:space-y-5'}`}>
               {/* Profile Statement */}
               {summary && (
                 <section className={`relative pl-2.5 sm:pl-3 border-s-2 sm:border-s-2 ${isDense ? 'mb-1.5' : isMainSparse ? 'mb-3 sm:mb-4' : 'mb-2'}`} style={{ borderColor: primary }}>
@@ -1124,6 +1105,38 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   </div>
                 </section>
               )}
+
+              {certifications && certifications.length > 0 && (
+                <section className="min-w-0">
+                  <h2
+                    className="text-xs sm:text-[13px] font-bold uppercase tracking-wider pb-1 mb-2 sm:mb-2.5 border-b flex items-center gap-1.5"
+                    style={{ color: primary, borderColor: `${primary}30` }}
+                  >
+                    <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                    <span>{t.certifications?.sectionTitle || 'Certifications'}</span>
+                  </h2>
+                  <div className={`min-w-0 ${isDense ? 'space-y-1.5' : isMainSparse ? 'space-y-3 sm:space-y-3.5' : 'space-y-2 sm:space-y-2.5'}`}>
+                    {certifications.map((cert) => (
+                      <div key={cert.id} className={`${isDense ? 'p-1.5 sm:p-2' : isMainSparse ? 'p-3 sm:p-3.5' : 'p-2 sm:p-2.5'} rounded-xl bg-slate-50/80 border border-slate-200/80 max-w-full overflow-hidden`}>
+                        <div className="flex flex-nowrap justify-between items-baseline gap-1">
+                          <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">{cert.name}</h3>
+                          <span className="text-[12px] text-slate-500 font-medium shrink-0">
+                            {cert.date}
+                          </span>
+                        </div>
+                        <div className="text-[12px] font-medium text-slate-700 flex flex-wrap items-center gap-1 mt-0.5">
+                          <span style={{ color: primary }} className="break-words">{cert.issuer}</span>
+                        </div>
+                        {cert.link && (
+                          <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-[12px] text-blue-600 underline mt-0.5 break-words block">
+                            {cert.link}
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
           </main>
         </div>
@@ -1138,7 +1151,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
       id={id}
       dir={isRTL ? 'rtl' : 'ltr'}
       {...dataAttrs}
-      className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-between' : ''} mx-auto`}
+      className={`${containerClasses} ${isAutoFill ? 'h-full min-h-[297mm] justify-start' : ''} mx-auto`}
       style={{ fontFamily: getFontFamily(), ...cssVars }}
     >
         {/* Clean Linear Header (Start-Aligned) */}
@@ -1210,7 +1223,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           </div>
         </header>
 
-        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-3' : effectiveSparse ? 'space-y-5.5 sm:space-y-6.5' : 'space-y-3.5 sm:space-y-4'}`}>
+        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-start space-y-6 sm:space-y-8' : isDense ? 'space-y-3' : effectiveSparse ? 'space-y-5.5 sm:space-y-6.5' : 'space-y-3.5 sm:space-y-4'}`}>
           {/* Summary */}
           {summary && (
             <section className="min-w-0">
@@ -1291,49 +1304,6 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                       <span>{edu.startDate} – {edu.endDate}</span>
                       {edu.gpa && <span className="ml-1 text-slate-600">({edu.gpa})</span>}
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Key Projects (if present) */}
-          {projects && projects.length > 0 && (
-            <section className="min-w-0">
-              <div className="mb-1.5 pb-1 border-b-2" style={{ borderColor: `${primary}35` }}>
-                <h2 className="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-slate-900">
-                  {t.projects?.sectionTitle || 'Projects'}
-                </h2>
-              </div>
-
-              <div className={`min-w-0 ${isDense ? 'space-y-2' : isSparse ? 'space-y-3.5 sm:space-y-4' : 'space-y-2.5 sm:space-y-3'}`}>
-                {projects.map((proj) => (
-                  <div key={proj.id} className="min-w-0">
-                    <div className="flex flex-nowrap justify-between items-baseline gap-1">
-                      <div className="text-xs sm:text-[13px] font-bold text-slate-900 break-words">
-                        <span>{proj.name}</span>
-                        {proj.role && <span className="font-normal text-slate-500 mx-1">({proj.role})</span>}
-                      </div>
-                      {proj.link && (
-                        <span dir="ltr" className="text-[11px] text-slate-500 shrink-0 max-w-[200px] truncate">
-                          {proj.link.replace(/^https?:\/\//, '')}
-                        </span>
-                      )}
-                    </div>
-                    {proj.technologies && proj.technologies.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-0.5">
-                        {proj.technologies.map((tech, idx) => (
-                          <span key={idx} className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {proj.description && (
-                      <p className={`text-[12px] text-slate-600 mt-0.5 break-words ${isDense ? 'leading-[1.55]' : isSparse ? 'leading-[1.78]' : 'leading-[1.6]'}`}>
-                        {renderText(proj.description)}
-                      </p>
-                    )}
                   </div>
                 ))}
               </div>
@@ -1462,7 +1432,7 @@ const MinimalistTemplateWrapper: React.FC<CVDocumentProps> = (props) => {
 
 const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
   const { t, isRTL } = useLanguage();
-  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+  const { personal, summary, experiences, education, skills, languages, hobbies, certifications, theme } = data;
   const primary = theme?.primaryColor || '#b45309';
   const density = getContentDensity(data);
   const { isDense } = density;
@@ -1564,7 +1534,7 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
           <p className="text-[13px] font-bold tracking-widest uppercase break-words" style={{ color: primary }}>{personal.jobTitle}</p>
         </header>
 
-        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-4' : 'space-y-8'}`}>
+        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-start space-y-6 sm:space-y-8' : isDense ? 'space-y-4' : 'space-y-8'}`}>
           {summary && (
             <section className="text-start min-w-0">
               <p className="text-[12px] text-slate-600 break-words whitespace-pre-wrap leading-[1.7]">{renderText(summary)}</p>
@@ -1629,7 +1599,36 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
               </div>
             </section>
           )}
-        </div>
+
+          {certifications && certifications.length > 0 && (
+            <section className="min-w-0">
+              <div className="flex items-center gap-2 mb-4 border-b-2 pb-2" style={{ borderColor: `${primary}20` }}>
+                <Award className="w-5 h-5" style={{ color: primary }} />
+                <h2 className="text-sm font-bold uppercase tracking-widest text-slate-900">
+                  {t.certifications?.sectionTitle || 'Certifications'}
+                </h2>
+              </div>
+              <div className={`min-w-0 ${isDense ? 'space-y-3' : 'space-y-5'}`}>
+                {certifications.map(cert => (
+                  <div key={cert.id} className="min-w-0">
+                    <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                      <h3 className="text-[13px] font-bold text-slate-900 uppercase break-words">{cert.name}</h3>
+                      <span className="text-[10px] font-bold tracking-widest text-slate-500 shrink-0">
+                        {cert.date}
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-bold break-words" style={{ color: primary }}>{cert.issuer}</h4>
+                    {cert.link && (
+                      <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-[12px] text-blue-600 underline mt-0.5 break-words block">
+                        {cert.link}
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+      </div>
       </div>
     </div>
   );
@@ -1637,7 +1636,7 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
 
 const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
   const { t, isRTL } = useLanguage();
-  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+  const { personal, summary, experiences, education, skills, languages, hobbies, certifications, theme } = data;
   const primary = theme?.primaryColor || '#b45309';
   const density = getContentDensity(data);
   const { isDense } = density;
@@ -1758,11 +1757,33 @@ const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
                 </div>
               </section>
             )}
+
+            {certifications && certifications.length > 0 && (
+              <section className="min-w-0">
+                <h2 className="text-[13px] font-bold text-slate-800 mb-4 flex items-center gap-3">
+                  <span className="w-5 h-5 shrink-0 rounded flex items-center justify-center" style={{ backgroundColor: primary }}> 
+                    <Award className="w-3 h-3 text-white" />
+                  </span>
+                  {t.certifications?.sectionTitle || 'Certifications'}
+                </h2>
+                <div className={`space-y-5 ms-2.5 border-s-2 border-slate-200 ps-4 min-w-0 ${isDense ? 'space-y-3' : 'space-y-5'}`}>
+                  {certifications.map(cert => (
+                    <div key={cert.id} className="min-w-0">
+                      <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                        <h3 className="text-[13px] font-bold text-slate-800 break-words">{cert.name}</h3>
+                        <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0">{cert.date}</span>
+                      </div>
+                      <h4 className="text-xs font-bold break-words" style={{ color: primary }}>{cert.issuer}</h4>
+                      {cert.link && <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline mt-0.5 break-words block">{cert.link}</a>}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         </div>
-
         {/* Sidebar (Right) */}
-        <div className="w-[38%] shrink-0 bg-slate-800 text-white pt-10 pb-8 flex flex-col text-start shadow-inner relative z-0 min-w-0">
+<div className="w-[38%] shrink-0 bg-slate-800 text-white pt-10 pb-8 flex flex-col text-start shadow-inner relative z-0 min-w-0">
           <div className={`w-full min-w-0 ${isDense ? 'space-y-4' : 'space-y-8'}`}>
             
             {/* Ribbons */}
@@ -1831,7 +1852,7 @@ const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
 
 const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }) => {
   const { t, isRTL } = useLanguage();
-  const { personal, summary, experiences, education, skills, languages, hobbies, theme } = data;
+  const { personal, summary, experiences, education, skills, languages, hobbies, certifications, theme } = data;
   const primary = theme?.primaryColor || '#ca8a04';
   const density = getContentDensity(data);
   const { isDense } = density;
@@ -1938,7 +1959,7 @@ const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }
           <p className="text-[13px] font-bold tracking-widest uppercase break-words" style={{ color: primary }}>{personal.jobTitle}</p>
         </header>
 
-        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-between space-y-6 sm:space-y-8' : isDense ? 'space-y-4' : 'space-y-8'}`}>
+        <div className={`w-full min-w-0 flex-1 flex flex-col ${isAutoFill ? 'justify-start space-y-6 sm:space-y-8' : isDense ? 'space-y-4' : 'space-y-8'}`}>
           {summary && (
             <section className="w-full min-w-0">
               <div className="mb-4 w-full">
@@ -1997,6 +2018,28 @@ const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }
                         {edu.fieldOfStudy} {edu.gpa && ` GPA: ${edu.gpa}`}
                       </p>
                     )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {certifications && certifications.length > 0 && (
+            <section className="w-full min-w-0">
+              <div className="mb-4 w-full"> 
+                <h2 className={`inline-block border rounded-full px-5 py-1.5 text-[11px] font-bold uppercase whitespace-nowrap leading-none ${isRTL ? 'tracking-normal' : 'tracking-widest'}`} style={{ borderColor: primary, color: primary, borderRadius: "9999px", borderWidth: "1.5px", borderStyle: "solid" }}>
+                  {t.certifications?.sectionTitle || 'Certifications'}
+                </h2>
+              </div>
+              <div className={`w-full min-w-0 ${isDense ? 'space-y-3' : 'space-y-5'}`}>
+                {certifications.map(cert => (
+                  <div key={cert.id} className="w-full min-w-0">
+                    <div className="flex flex-col xl:flex-row xl:justify-between xl:items-baseline mb-1 gap-1 min-w-0">
+                      <h3 className="text-[13px] font-bold text-white leading-snug break-words">{cert.name}</h3>
+                      <span className="text-[10px] font-bold text-slate-500 tracking-wider shrink-0 xl:text-end mt-1 xl:mt-0">{cert.date}</span>
+                    </div>
+                    <h4 className="text-[11px] text-slate-400 mt-1 break-words">{cert.issuer}</h4>
+                    {cert.link && <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-[11px] text-blue-400 underline mt-1 break-words block">{cert.link}</a>}
                   </div>
                 ))}
               </div>

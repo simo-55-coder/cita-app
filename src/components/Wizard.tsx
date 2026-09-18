@@ -8,7 +8,6 @@ import { ExperienceSection } from './sections/ExperienceSection';
 import { EducationSection } from './sections/EducationSection';
 import { SkillsSection } from './sections/SkillsSection';
 import { LanguagesSection } from './sections/LanguagesSection';
-import { ProjectsSection } from './sections/ProjectsSection';
 import { CertificationsSection } from './sections/CertificationsSection';
 import { HobbiesSection } from './sections/HobbiesSection';
 import { ThemeSection } from './sections/ThemeSection';
@@ -31,7 +30,6 @@ const TAB_ORDER: WizardTabKey[] = [
   'education',
   'skills',
   'languages',
-  'projects',
   'certifications',
   'hobbies',
   'theme',
@@ -70,7 +68,6 @@ export const Wizard: React.FC<WizardProps> = ({
     education: data.education.length,
     skills: data.skills.length,
     languages: data.languages.length,
-    projects: data.projects?.length || 0,
     certifications: data.certifications?.length || 0,
     hobbies: data.hobbies.length,
     theme: '',
@@ -137,12 +134,6 @@ export const Wizard: React.FC<WizardProps> = ({
               <LanguagesSection
                 languages={data.languages}
                 onChange={(languages) => onUpdateCV((prev) => ({ ...prev, languages }))}
-              />
-            )}
-            {activeTab === 'projects' && (
-              <ProjectsSection
-                projects={data.projects || []}
-                onChange={(projects) => onUpdateCV((prev) => ({ ...prev, projects }))}
               />
             )}
             {activeTab === 'certifications' && (
