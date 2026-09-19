@@ -17,6 +17,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { initAuth } from './services/googleDrive';
 import { User } from 'firebase/auth';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { SplashScreen } from './components/SplashScreen';
 
 const STORAGE_KEY = 'mobile_cv_builder_data_v2';
 
@@ -129,6 +130,9 @@ function CVBuilderApp() {
 
   return (
     <>
+      {/* Smooth Brand Splash Screen */}
+      <SplashScreen />
+
       {/* Primary Interactive Screen UI (hidden automatically during printing) */}
       <div
         dir={isRTL ? 'rtl' : 'ltr'}

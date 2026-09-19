@@ -3,8 +3,8 @@
   "short_name": "CVita",
   "start_url": "/cita-app/",
   "display": "standalone",
-  "background_color": "#7C3AED",
-  "theme_color": "#7C3AED",
+  "background_color": "#703ED1",
+  "theme_color": "#703ED1",
   "orientation": "portrait",
   "description": "Mobile-first CV builder optimized for Android smartphones with smooth wizard navigation",
   "icons": [
