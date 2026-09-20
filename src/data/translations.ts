@@ -225,6 +225,7 @@ export const d = {
       zoomOut: 'Zoom Out',
       printPdf: 'Print / PDF',
       downloadPdf: 'Download PDF',
+      sharePdf: 'Share / Save PDF',
       downloadJson: 'Download JSON',
       downloaded: 'Downloaded!',
       generatingPdf: 'Generating PDF...',
@@ -570,7 +571,7 @@ export const d = {
       classicSerifDesc: 'Élégant et institutionnel pour les postes de direction',
     },
 
-    // Preview Controls
+    // Preview Controls (French)
     previewControls: {
       backToEditor: 'Éditeur',
       fitToScreen: 'Ajuster à l\'Écran',
@@ -578,6 +579,7 @@ export const d = {
       zoomOut: 'Zoom -',
       printPdf: 'Imprimer / PDF',
       downloadPdf: 'Télécharger PDF',
+      sharePdf: 'Partager / Enregistrer PDF',
       downloadJson: 'Télécharger JSON',
       generatingPdf: 'Génération du PDF...',
       preparingPrint: 'Ouverture de l\'impression / PDF...',
@@ -922,14 +924,15 @@ export const d = {
       classicSerifDesc: 'خط رصين وأنيق للمناصب الإدارية والقيادية',
     },
 
-    // Preview Controls
+    // Preview Controls (Arabic)
     previewControls: {
       backToEditor: 'المحرر',
       fitToScreen: 'ملاءمة شاشة الهاتف',
       zoomIn: 'تكبير',
       zoomOut: 'تصغير',
       printPdf: 'طباعة / PDF',
-      downloadPdf: 'تنزيل PDF',
+      downloadPdf: 'تحميل PDF',
+      sharePdf: 'مشاركة / حفظ PDF',
       downloadJson: 'تنزيل JSON',
       generatingPdf: 'جاري تجهيز PDF...',
       preparingPrint: 'جاري فتح نافذة الطباعة / PDF...',

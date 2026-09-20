@@ -289,7 +289,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                     src={personal.avatarUrl}
                     alt={personal.fullName}
                     referrerPolicy="no-referrer"
-                    className="cv-profile-avatar header-avatar w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 sm:border-3 shadow-md shrink-0"
+                    className="cv-profile-avatar header-avatar w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 sm:border-3 shadow-md shrink-0"
                     style={{ borderColor: primary }}
                   />
                 </div>
@@ -548,12 +548,12 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
           {/* Formal Centered Header */}
           <header className="text-center pb-3 sm:pb-4 mb-4 sm:mb-6 border-b-2 border-double shrink-0" style={{ borderColor: primary }}>
             {personal.avatarUrl && (
-              <div className="flex justify-center mb-3 shrink-0">
+              <div className="flex justify-center mb-3.5 shrink-0">
                 <img
                   src={personal.avatarUrl}
                   alt={personal.fullName}
                   referrerPolicy="no-referrer"
-                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 shadow-sm"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 sm:border-3 shadow-md"
                   style={{ borderColor: primary }}
                 />
               </div>
@@ -843,12 +843,12 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   src={personal.avatarUrl}
                   alt={personal.fullName}
                   referrerPolicy="no-referrer"
-                  className="cv-profile-avatar sidebar-avatar w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto object-cover border-2 sm:border-3 shadow-md shrink-0"
+                  className="cv-profile-avatar sidebar-avatar w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto object-cover border-2 sm:border-3 shadow-md shrink-0"
                   style={{ borderColor: primary }}
                 />
               ) : (
                 <div
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto flex items-center justify-center text-white text-lg sm:text-2xl font-bold shadow-md shrink-0"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto flex items-center justify-center text-white text-lg sm:text-2xl font-bold shadow-md shrink-0"
                   style={{ backgroundColor: primary }}
                 >
                   {(personal.fullName || 'A').charAt(0)}
@@ -1171,7 +1171,7 @@ const CVDocumentInner: React.FC<CVDocumentProps> = ({
                   src={personal.avatarUrl}
                   alt={personal.fullName}
                   referrerPolicy="no-referrer"
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-slate-200 shadow-sm"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border border-slate-200 shadow-sm"
                 />
               </div>
             )}
@@ -1456,7 +1456,7 @@ const ExecutiveModernTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
         <div className="flex justify-center mb-2 shrink-0">
           <div className="w-32 h-32 shrink-0 rounded-full overflow-hidden border-[3px] p-1 flex items-center justify-center" style={{ borderColor: primary }}>
             {personal.avatarUrl ? (
-              <img src={personal.avatarUrl} alt="Profile" className="w-full h-full rounded-full object-cover bg-slate-800" crossOrigin="anonymous" />
+              <img src={personal.avatarUrl} alt="Profile" referrerPolicy="no-referrer" className="w-full h-full rounded-full object-cover bg-slate-800" crossOrigin="anonymous" />
             ) : (
               <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center text-3xl text-white/50 font-light">{personal.fullName?.charAt(0) || ''}</div>
             )}
@@ -1671,7 +1671,7 @@ const CreativeMinimalTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint 
             {/* Avatar overlapping bottom */}
             <div className="absolute -bottom-16 start-0 w-32 h-32 rounded-full overflow-hidden border-[6px] border-white shadow-lg bg-slate-100 flex items-center justify-center z-20">
                {personal.avatarUrl ? (
-                  <img src={personal.avatarUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
+                  <img src={personal.avatarUrl} alt="Profile" referrerPolicy="no-referrer" className="w-full h-full object-cover" crossOrigin="anonymous" />
                ) : (
                   <span className="text-3xl text-slate-400 font-light">{personal.fullName?.charAt(0) || ''}</span>
                )}
@@ -1880,7 +1880,7 @@ const CorporateEliteTemplate: React.FC<CVDocumentProps> = ({ data, id, isPrint }
            <div className="w-32 h-32 shrink-0 aspect-square relative" style={{ backgroundColor: primary, clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)' }}>
               <div className="absolute inset-[3px] bg-slate-950 flex items-center justify-center overflow-hidden" style={{ clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)' }}>
                 {personal.avatarUrl ? (
-                  <img src={personal.avatarUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
+                  <img src={personal.avatarUrl} alt="Profile" referrerPolicy="no-referrer" className="w-full h-full object-cover" crossOrigin="anonymous" />
                 ) : (
                   <span className="text-4xl text-slate-500 font-light">{personal.fullName?.charAt(0) || ''}</span>
                 )}

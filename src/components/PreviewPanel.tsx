@@ -5,18 +5,15 @@ import { AdModal } from './AdModal';
 import { showRewardedAd } from '../lib/admob';
 import { CVStrengthMeter } from './CVStrengthMeter';
 import { CustomizationToolbar } from './CustomizationToolbar';
+import { Capacitor } from '@capacitor/core';
+import { Share } from '@capacitor/share';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 import {
-  Share2,
-  ZoomIn,
-  ZoomOut,
-  Maximize2,
   Download,
   CloudUpload,
   ArrowLeft,
   ArrowRight,
-  ExternalLink,
   AlertCircle,
-  CheckCircle2,
   X,
   Loader2,
 } from 'lucide-react';
@@ -41,6 +38,8 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [customZoom, setCustomZoom] = useState<number>(1);
   const [zoomMode, setZoomMode] = useState<'fit' | 'custom'>('fit');
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleUpdateTheme = (updates: Partial<CVTheme>) => {
     if (onUpdateCV) {
@@ -82,25 +81,17 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
   const effectiveZoom = zoomMode === 'fit' ? fitScale : customZoom;
 
-  const [printStatus, setPrintStatus] = useState<{
-    show: boolean;
-    isError?: boolean;
-    message?: string;
-  } | null>(null);
-
-  const [generatedPdf, setGeneratedPdf] = useState<{ file: File; filename: string; objectUrl: string } | null>(null);
-
   const [showAdModal, setShowAdModal] = useState(false);
 
-  // Auto-dismiss success notification after 5 seconds
+  // Auto-dismiss error after 5 seconds
   useEffect(() => {
-    if (printStatus?.show && !printStatus.isError && !generatedPdf) {
+    if (errorMessage) {
       const timer = window.setTimeout(() => {
-        setPrintStatus(null);
+        setErrorMessage(null);
       }, 5000);
       return () => window.clearTimeout(timer);
     }
-  }, [printStatus]);
+  }, [errorMessage]);
 
   const handleZoomIn = () => {
     setZoomMode('custom');
@@ -117,45 +108,35 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     setCustomZoom(1);
   };
 
-  // Direct browser action fallback: open in a new tab where iframe restrictions never apply
-  const handleDirectFallback = () => {
-    try {
-      const newWin = window.open(window.location.href, '_blank');
-      if (!newWin) {
-        window.alert(t.previewControls.printIframeHelp);
-      }
-    } catch {
-      window.alert(t.previewControls.printIframeHelp);
-    }
-  };
-
-  // Direct download PDF handler using html2canvas-pro and jspdf (supports Tailwind 4 oklch colors)
-    const handleDownloadPdf = (e?: React.MouseEvent | React.TouchEvent) => {
+  // Direct download PDF handler with online/offline detection
+  const handleDownloadPdf = (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-    setShowAdModal(true);
+    if (isGenerating) return;
+
+    // Check if device is connected to the internet
+    const isOnline = typeof navigator !== 'undefined' && navigator.onLine;
+    if (isOnline) {
+      // Show rewarded ad when online
+      setShowAdModal(true);
+    } else {
+      // Allow direct download without showing ad when offline
+      executeDownloadPdf(false);
+    }
   };
 
-  const executeDownloadPdf = async () => {
-    setGeneratedPdf(null);
+  const executeDownloadPdf = async (shouldShowAd: boolean = true) => {
+    setIsGenerating(true);
+    setErrorMessage(null);
+
     const safeName = (data.personal?.fullName || 'CV').trim();
     const filename = `${safeName.replace(/\s+/g, '_')}_CV.pdf`;
 
-    setPrintStatus({
-      show: true,
-      isError: false,
-      message: 'Preparing document (Ads help keep this app free)...',
-    });
-
-    await showRewardedAd();
-
-    setPrintStatus({
-      show: true,
-      isError: false,
-      message: t.previewControls.preparingPrint || 'Generating PDF... Please wait.',
-    });
+    if (shouldShowAd && typeof navigator !== 'undefined' && navigator.onLine) {
+      await showRewardedAd();
+    }
 
     try {
       const element = document.getElementById('interactive-cv-preview');
@@ -223,24 +204,57 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
         heightLeft -= pageHeight;
       }
 
+      // Generate base64 data for Capacitor Native Filesystem & Share
+      const pdfBase64 = pdf.output('datauristring').split(',')[1];
       const pdfBlob = pdf.output('blob');
       const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
-      const objectUrl = URL.createObjectURL(pdfBlob);
-      
-      setGeneratedPdf({ file: pdfFile, filename, objectUrl });
 
-      setPrintStatus({
-        show: true,
-        isError: false,
-        message: 'PDF generated successfully! Choose an action below:',
-      });
+      // 1. Native Capacitor (Android APK/AAB for Google Play Store)
+      if (Capacitor.isNativePlatform()) {
+        try {
+          const writeRes = await Filesystem.writeFile({
+            path: filename,
+            data: pdfBase64,
+            directory: Directory.Cache,
+          });
+
+          await Share.share({
+            title: filename,
+            text: safeName,
+            url: writeRes.uri,
+            dialogTitle: isRTL ? 'مشاركة وحفظ السيرة الذاتية PDF' : 'Share / Save CV PDF',
+          });
+          return;
+        } catch (nativeShareErr: any) {
+          console.warn('Native Capacitor share failed, falling back:', nativeShareErr);
+        }
+      }
+
+      // 2. Web Share API (Mobile Browsers like Chrome / Safari / Brave)
+      if (typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+        try {
+          await navigator.share({
+            files: [pdfFile],
+            title: filename,
+            text: safeName,
+          });
+          return;
+        } catch (webShareErr: any) {
+          if (webShareErr.name === 'AbortError') {
+            // User cancelled the share dialog
+            return;
+          }
+          console.warn('Web Share failed, falling back to download:', webShareErr);
+        }
+      }
+
+      // 3. Fallback direct browser download for desktop browsers
+      pdf.save(filename);
     } catch (err: any) {
-      console.error('PDF generation failed:', err);
-      setPrintStatus({
-        show: true,
-        isError: true,
-        message: err?.message || 'Failed to generate PDF. Please try again.',
-      });
+      console.error('PDF generation or sharing failed:', err);
+      setErrorMessage(err?.message || 'Failed to generate/share PDF. Please try again.');
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -265,17 +279,24 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           <CVStrengthMeter data={data} variant="mini" />
         </div>
 
-        {/* Action Buttons: Download PDF */}
+        {/* Action Buttons: Download PDF (triggers native share / file save) */}
         <div className="flex items-center gap-1.5 shrink-0 pointer-events-auto">
           <button
             id="btn-preview-download"
             type="button"
             onClick={handleDownloadPdf}
+            disabled={isGenerating}
             title={t.previewControls.downloadPdf}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-600 active:bg-violet-700 text-white text-xs font-bold transition-all shadow-md shadow-violet-600/20 cursor-pointer pointer-events-auto touch-manipulation select-none active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-600 active:bg-violet-700 text-white text-xs font-bold transition-all shadow-md shadow-violet-600/20 cursor-pointer pointer-events-auto touch-manipulation select-none active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{t.previewControls.downloadPdf}</span>
+            {isGenerating ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Download className="w-3.5 h-3.5" />
+            )}
+            <span className="hidden sm:inline">
+              {isGenerating ? t.previewControls.generatingPdf : t.previewControls.downloadPdf}
+            </span>
           </button>
         </div>
       </div>
@@ -283,88 +304,22 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       {/* Live Customization Toolbar (Font Size, Spacing & Smart Auto-Fill) */}
       <CustomizationToolbar theme={data.theme} onUpdateTheme={handleUpdateTheme} />
 
-      {/* Direct Feedback Alert / Fallback Toast */}
-      {printStatus?.show && (
+      {/* Error Alert Toast (if any) */}
+      {errorMessage && (
         <div className="fixed top-14 inset-x-3 max-w-md mx-auto z-50 animate-fadeIn pointer-events-auto">
-          <div
-            className={`p-3 rounded-2xl shadow-xl border flex flex-col gap-2 backdrop-blur-md transition-all ${
-              printStatus.isError
-                ? 'bg-amber-50/95 border-amber-300 text-amber-900'
-                : 'bg-violet-900/95 text-white border-violet-700/80'
-            }`}
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-2">
-                {printStatus.isError ? (
-                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                ) : (
-                  <CheckCircle2 className="w-4 h-4 text-violet-300 shrink-0" />
-                )}
-                <p className="text-xs font-semibold leading-snug">{printStatus.message}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setPrintStatus(null)}
-                className={`p-1 rounded-lg hover:bg-black/10 transition-colors ${
-                  printStatus.isError ? 'text-amber-800' : 'text-violet-200'
-                }`}
-                title={t.previewControls.closeAlert}
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
+          <div className="p-3 rounded-2xl shadow-xl border flex items-center justify-between gap-2 bg-amber-50/95 border-amber-300 text-amber-900 backdrop-blur-md">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              <p className="text-xs font-semibold leading-snug">{errorMessage}</p>
             </div>
-
-            {/* Direct fallback trigger for iframe blocking or Action buttons for generated PDF */}
-            <div className="flex flex-col gap-2 pt-1 border-t border-black/10">
-              
-              {generatedPdf ? (
-                <div className="flex flex-wrap items-center gap-2">
-                  {navigator.canShare && navigator.canShare({ files: [generatedPdf.file] }) && (
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          await navigator.share({
-                            files: [generatedPdf.file],
-                            title: generatedPdf.filename,
-                          });
-                          setPrintStatus(null);
-                        } catch (err: any) {
-                          if (err.name !== 'AbortError') console.error('Share error:', err);
-                        }
-                      }}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      <span>{(t.previewControls as Record<string, string>).share || (isRTL ? 'مشاركة PDF' : 'Share PDF')}</span>
-                    </button>
-                  )}
-                  <a
-                    href={generatedPdf.objectUrl}
-                    download={generatedPdf.filename}
-                    onClick={() => setPrintStatus(null)}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-white text-xs font-bold shadow-xs transition-all cursor-pointer text-center"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span>{t.previewControls.downloadPdf || 'Download'}</span>
-                  </a>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handleDirectFallback}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-xs font-bold shadow-xs transition-all cursor-pointer shrink-0"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 text-violet-600" />
-                    <span>{t.previewControls.openInNewTab}</span>
-                  </button>
-                  <span className="text-[11px] opacity-80 flex-1 leading-tight">
-                    {t.previewControls.printIframeHelp}
-                  </span>
-                </div>
-              )}
-            </div>
+            <button
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              className="p-1 rounded-lg hover:bg-black/10 text-amber-800 transition-colors"
+              title={t.previewControls.closeAlert}
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       )}
@@ -409,11 +364,18 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           id="btn-dock-download"
           type="button"
           onClick={handleDownloadPdf}
-          className="flex-1 py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md shadow-violet-600/20 cursor-pointer pointer-events-auto active:scale-95 touch-manipulation"
+          disabled={isGenerating}
+          className="flex-1 py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md shadow-violet-600/20 cursor-pointer pointer-events-auto active:scale-95 touch-manipulation disabled:opacity-70 disabled:cursor-not-allowed"
           title={t.previewControls.downloadPdf}
         >
-          <Download className="w-3.5 h-3.5" />
-          <span className="truncate">{t.previewControls.downloadPdf}</span>
+          {isGenerating ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <Download className="w-3.5 h-3.5" />
+          )}
+          <span className="truncate">
+            {isGenerating ? t.previewControls.generatingPdf : t.previewControls.downloadPdf}
+          </span>
         </button>
       </div>
 
