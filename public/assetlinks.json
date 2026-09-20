@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.simo_55_coder.twa",
+        "sha256_cert_fingerprints": ["A9:46:B1:9A:C0:6A:1A:2E:C7:70:55:F7:8D:2D:6A:F2:E7:76:D7:CB:D2:88:D7:A4:4D:7A:4B:DB:B1:30:29:0D"]
+      }
+    }]
