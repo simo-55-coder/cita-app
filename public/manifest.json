@@ -2,6 +2,7 @@
   "name": "CVita",
   "short_name": "CVita",
   "start_url": "/cita-app/",
+  "scope": "/cita-app/",
   "display": "standalone",
   "background_color": "#703ED1",
   "theme_color": "#703ED1",
@@ -9,16 +10,16 @@
   "description": "Mobile-first CV builder optimized for Android smartphones with smooth wizard navigation",
   "icons": [
     {
-      "src": "pwa-logo-192.png",
+      "src": "./pwa-logo-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "pwa-logo-512.png",
+      "src": "./pwa-logo-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
